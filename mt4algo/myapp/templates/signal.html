@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Signals</title>
+</head>
+<body>
+    <h1>Signals</h1>
+    <table>
+        <tr>
+            <th>Signal ID</th>
+            <th>Symbol</th>
+            <th>Type</th>
+            <th>Price</th>
+            <th>Timestamp</th>
+        </tr>
+        {% for signal in signals %}
+        <tr>
+            <td>{{ signal.signal_id }}</td>
+            <td>{{ signal.symbol }}</td>
+            <td>{{ signal.signal_type }}</td>
+            <td>{{ signal.price }}</td>
+            <td>{{ signal.timestamp }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

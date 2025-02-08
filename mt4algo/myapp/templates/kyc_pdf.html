@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>KYC Records</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+<h1>KYC Records</h1>
+<p>From Date: {{ from_date }} | To Date: {{ to_date }}</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Client</th>
+            <th>National ID</th>
+            <th>National ID Number</th>
+            <th>National/ID Name</th>
+            <th>National ID Issue Date</th>
+            <th>Agreement Signed</th>
+            <th>Terms Accepted</th>
+            <th>Reference Text</th>
+            <th>KYC Completed</th>
+            <th>Video Verification Done</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for kyc in kyc_records %}
+        <tr>
+            <td>{{ kyc.id }}</td>
+            <td>{{ kyc.client.name_first }} {{ kyc.client.name_last }}</td>
+            <td>
+                {% if kyc.national_id %}
+                    <a href="{{ kyc.national_id.url }}" download>Download</a>
+                {% else %}
+                    No File
+                {% endif %}
+            </td>
+            <td>{{ kyc.national_id_number }}</td>
+            <td>{{ kyc.national_id_name }}</td>
+            <td>{{ kyc.national_id_issue_date }}</td>
+            <td>{{ kyc.agreement_signed }}</td>
+            <td>{{ kyc.terms_accepted }}</td>
+            <td>{{ kyc.reference_text }}</td>
+            <td>{{ kyc.kyc_completed }}</td>
+            <td>{{ kyc.video_verification_done }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</body>
+</html>

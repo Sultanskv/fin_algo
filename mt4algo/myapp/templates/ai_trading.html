@@ -1,0 +1,301 @@
+{% extends 'client_base.html' %}
+{% load static %}
+{% block main %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Trading Assistant</title>
+    <style>
+    /* Chat Container */
+    body {
+        background: linear-gradient(120deg, #1e1e1e, #121212);
+        color: #e0e0e0;
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+    .chat-container {
+        max-width: 1400px;
+        margin: 0px auto;
+        padding: 20px;
+        background-color: #000000;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        display: flex;
+        flex-direction: column;
+        height: 65vh;
+        position: relative;
+    }
+    /* Chat Header */
+    .chat-header {
+        text-align: center;
+        font-size: 26px;
+        font-weight: bold;
+        color: #ffffff;
+        margin-bottom: 20px;
+        text-shadow: 0 2px 6px rgba(255, 255, 255, 0.3);
+        letter-spacing: 1px;
+    }
+    
+    /* Chat Box Styling */
+    .chat-box {
+        display: flex;
+        flex-direction: column;
+        height: 60vh; /* Set a fixed height for scrolling */
+        overflow-y: auto;
+        padding: 10px;
+        background-color: #000000;
+        border-radius: 8px;
+        border: 1px solid #000000;
+        scrollbar-width: thin; /* For Firefox */
+        -ms-overflow-style: none; /* For Internet Explorer */
+    }
+    
+    .chat-box::-webkit-scrollbar {
+        width: 8px; /* For Chrome, Safari, and Opera */
+    }
+    
+    .chat-box::-webkit-scrollbar-track {
+        background: #1e1e1e;
+    }
+    
+    .chat-box::-webkit-scrollbar-thumb {
+        background: #4a90e2;
+        border-radius: 4px;
+    }
+    
+    /* Chat Message Styling */
+    .chat-message {
+        margin-bottom: 15px;
+        display: flex;
+        flex-direction: column;
+        color: white;
+        font-family: 'Arial', sans-serif;
+    }
+    
+    .chat-message.user {
+        align-items: flex-end;
+    }
+    
+    .chat-message.assistant {
+        align-items: flex-start;
+    }
+    
+    .chat-message p {
+        max-width: 70%;
+        padding: 12px 18px;
+        border-radius: 16px;
+        font-size: 16px;
+        line-height: 1.6;
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+        transition: transform 0.2s ease;
+        display: flex;
+        align-items: center;
+    }
+    
+    /* Hover Effects for Messages */
+    .chat-message p:hover {
+        transform: scale(1.03); /* Slightly enlarge on hover */
+        transition: transform 0.2s ease-in-out;
+    }
+    
+    .chat-message.user p {
+        background: linear-gradient(145deg, #3d4248, #373737);
+        color: #ffffff;
+        padding: 12px 18px;
+        border-radius: 16px 0px 16px 16px;
+        font-size: 14px;
+        max-width: 70%;
+        text-align: left;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        border: 1px solid #535353;
+        flex-direction: row-reverse;
+        }
+    
+    /* Assistant Message Styling */
+    .chat-message.assistant p {
+        background: linear-gradient(145deg, #3a3a3a, #2a2a2a);
+        color: #e0e0e0;
+        padding: 12px 18px;
+        border-radius: 0px 16px 16px 16px; /* Rounded corners with flat top-right */
+        font-size: 14px;
+        max-width: 70%;
+        text-align: left;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        border: 1px solid #444444;
+    }
+    
+    /* Icon Styling */
+    .chat-message p .icon {
+        width: 32px;
+        height: 32px;
+        margin-right: 10px;
+    }
+    
+    .chat-message.user p .icon {
+        margin-left: 10px;
+        margin-right: 0;
+    }
+    
+    /* Chat Input */
+    .chat-input {
+        display: flex;
+        align-items: center;
+        margin-top: 15px;
+        background: linear-gradient(145deg, #232323, #1a1a1a);
+        border-radius: 12px;
+        padding: 10px 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    }
+    
+    .chat-input textarea {
+        flex: 1;
+        resize: none;
+        border: none;
+        border-radius: 8px;
+        padding: 10px;
+        background-color: #282828;
+        color: #e0e0e0;
+        font-size: 14px;
+        outline: none;
+    }
+    
+    .chat-input textarea::placeholder {
+        color: #888888;
+    }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            FinoFxAlgo AI Trading Assistant
+        </div>
+
+        <div class="chat-box" id="chat-messages">
+            {% for message in chat_history %}
+                <div class="chat-message {{ message.role }}">
+                    <p>
+                        {% if message.role == 'user' %}
+                            <img src="{% static 'man-avatar.png' %}" alt="User Icon" class="icon">
+                        {% else %}
+                            <img src="{% static 'ai.png' %}" alt="Assistant Icon" class="icon">
+                        {% endif %}
+                        {{ message.content }}
+                    </p>
+                </div>
+            {% endfor %}
+        </div>
+
+        <form method="POST" class="chat-input" id="chat-form">
+            {% csrf_token %}
+            <textarea name="message" id="chat-input" rows="1" placeholder="Type your message..."></textarea>
+        </form>
+    </div>
+
+    <!-- JavaScript code -->
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // **Define variables with static URLs for the icons**
+        const userIconUrl = "{% static 'man-avatar.png' %}";
+        const assistantIconUrl = "{% static 'ai.png' %}";
+
+        // Function to apply the 'current' class to the latest message
+        const updateCurrentMessage = () => {
+            const messages = document.querySelectorAll('.chat-message');
+            if (messages.length > 0) {
+                // Remove 'current' class from all messages
+                messages.forEach((msg) => msg.classList.remove('current'));
+
+                // Add 'current' class only to the last message
+                messages[messages.length - 1].classList.add('current');
+            }
+        };
+
+        // Automatically scroll to the bottom of the chat messages
+        const scrollToBottom = () => {
+            const chatMessages = document.getElementById("chat-messages");
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        };
+
+        // Typing effect for the current message
+        const typeWriter = (element, text, speed) => {
+            let i = 0;
+            element.innerHTML = ''; // Clear the content for typing effect
+            const interval = setInterval(() => {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(interval);
+                }
+            }, speed);
+        };
+
+        // Apply typing effect only to the latest message
+        const applyTypingEffect = () => {
+            const currentMessage = document.querySelector('.chat-message.current p');
+            if (currentMessage) {
+                const text = currentMessage.innerText;
+                typeWriter(currentMessage, text, 20); // Adjust speed as needed
+            }
+        };
+
+        // Initialize the chat by updating the current message and applying effects
+        updateCurrentMessage();
+        scrollToBottom();
+        applyTypingEffect();
+
+        // Form submission handler
+        const chatForm = document.getElementById('chat-form');
+        chatForm.addEventListener('submit', (event) => {
+            event.preventDefault(); // Prevent the default form submission
+
+            const chatInput = document.getElementById('chat-input');
+            const userMessage = chatInput.value.trim();
+
+            if (userMessage) {
+                // Append the user's message to the chat
+                const chatBox = document.getElementById('chat-messages');
+                const userMessageElement = document.createElement('div');
+                userMessageElement.className = 'chat-message user';
+                userMessageElement.innerHTML = `<p><img src="${userIconUrl}" alt="User Icon" class="icon">${userMessage}</p>`;
+                chatBox.appendChild(userMessageElement);
+
+                // Clear the input field
+                chatInput.value = '';
+
+                // Scroll to the bottom and update the current message
+                scrollToBottom();
+                updateCurrentMessage();
+
+                // Simulate assistant response (replace with actual server response handling)
+                setTimeout(() => {
+                    const assistantResponse = "Let me assist you with that!";
+                    const assistantMessageElement = document.createElement('div');
+                    assistantMessageElement.className = 'chat-message assistant';
+                    assistantMessageElement.innerHTML = `<p><img src="${assistantIconUrl}" alt="Assistant Icon" class="icon">${assistantResponse}</p>`;
+                    chatBox.appendChild(assistantMessageElement);
+
+                    // Scroll to the bottom and apply effects to the new message
+                    scrollToBottom();
+                    updateCurrentMessage();
+                    applyTypingEffect();
+                }, 1000); // Simulated response delay
+            }
+        });
+
+        // Handle Enter key for submitting the form
+        const chatInput = document.getElementById('chat-input');
+        chatInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault(); // Prevent line break
+                chatForm.submit(); // Submit the form
+            }
+        });
+    });
+    </script>
+</body>
+</html>
+{% endblock %}

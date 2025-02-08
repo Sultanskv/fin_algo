@@ -1,0 +1,187 @@
+{% extends 'admin_base.html' %}
+
+{% block main %}
+<style>
+    body {
+        background-color: #1a1a1a; /* Dark background */
+        color: #f1f1f1; /* Light text color */
+        font-family: Arial, sans-serif;
+    }
+
+    .container {
+        max-width: 1200px; /* Increased width for better alignment */
+        margin: auto;
+        padding: 20px;
+        display: flex; /* Enable flexbox */
+        justify-content: space-between; /* Space between forms */
+    }
+
+    .form-container {
+        flex: 1; /* Allow forms to grow */
+        margin: 10px; /* Space between forms */
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); /* Shadow effect for 3D look */
+        background-color: #2a2a2a; /* Darker container background */
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 20px;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+    }
+
+    h2 {
+        margin-top: 30px;
+        text-align: center;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    label {
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    select, input[type="text"], input[type="number"] {
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #333; /* Dark input background */
+        color: #fff; /* Light text color */
+        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    select:focus, input[type="text"]:focus, input[type="number"]:focus {
+        box-shadow: 0 0 10px rgba(0, 122, 255, 1);
+        outline: none;
+    }
+
+    button {
+        padding: 10px;
+        background-color: #007bff; /* Button color */
+        color: #fff; /* Button text color */
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 16px;
+        margin-top: 10px;
+    }
+
+    button:hover {
+        background-color: #0056b3; /* Darker button on hover */
+    }
+
+    .btn-danger {
+        background-color: #dc3545; /* Red for danger buttons */
+    }
+
+    .btn-danger:hover {
+        background-color: #c82333; /* Darker red on hover */
+    }
+
+    /* Live price display */
+    #live_price {
+        font-size: 18px;
+        margin-top: 10px;
+        color: #0f0; /* Green color for live price */
+    }
+
+    /* Responsive design */
+    @media (max-width: 600px) {
+        .container {
+            flex-direction: column; /* Stack vertically on small screens */
+        }
+        .form-container {
+            margin: 10px 0; /* Remove side margin on small screens */
+        }
+    }
+</style>
+
+<div class="container">
+    <div class="form-container">
+        <h1>Place Order</h1>
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        
+        <form method="POST" action="{% url 'place_order' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="symbol">Symbol:</label>
+                <select id="symbol" name="symbol" required onchange="fetchLivePrice()">
+                    {% for symbol in symbols %}
+                        <option value="{{ symbol }}">{{ symbol }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="order_type">Order Type:</label>
+                <select id="order_type" name="order_type" required>
+                    <option value="BUY">BUY</option>
+                    <option value="SELL">SELL</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="price">Price:</label>
+                <input type="text" id="price" name="price" readonly required>
+            </div>
+            <div id="live_price"></div>
+            <div class="form-group">
+                <label for="stop_loss">Stop Loss:</label>
+                <input type="number" step="0.00001" id="stop_loss" name="stop_loss" required>
+            </div>
+            <div class="form-group">
+                <label for="take_profit">Take Profit:</label>
+                <input type="number" step="0.00001" id="take_profit" name="take_profit" required>
+            </div>
+            <button type="submit">Place Order</button>
+        </form>
+    </div>
+
+    <div class="form-container">
+        <h2>Close All Orders for a Symbol</h2>
+        <form method="POST" action="{% url 'close_orders' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="close_symbol">Select Symbol to Close Orders:</label>
+                <select id="close_symbol" name="symbol" required>
+                    {% for symbol in symbols %}
+                        <option value="{{ symbol }}">{{ symbol }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-danger">Close All Orders</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function fetchLivePrice() {
+        var symbol = document.getElementById('symbol').value;
+        
+        // Fetch the live price from your Django backend
+        fetch(`/api/live_price/${symbol}/`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('price').value = data.price;
+                document.getElementById('live_price').innerText = `Live Price: ${data.price}`;
+            })
+            .catch(error => console.error('Error fetching live price:', error));
+    }
+
+    // Update price every second
+    setInterval(fetchLivePrice, 1000);
+</script>
+{% endblock %}

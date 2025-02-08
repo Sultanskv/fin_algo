@@ -1,0 +1,138 @@
+{% extends 'admin_base.html' %}
+
+{% block main %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Advisory</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEJgB4R7Qf3tQ5hn7Xg2zAmr5dNKwcbqA6lxLhguNCR0/+tnu14e1K3c5q+rn" crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #212529;
+            color: #f8f9fa;
+        }
+        .card {
+            background-color: #343a40;
+            border-radius: 10px;
+        }
+        .card-body {
+            padding: 30px;
+        }
+        .form-select, .form-control, .form-check-input {
+            background-color: #495057;
+            color: #f8f9fa;
+            border: 1px solid #6c757d;
+        }
+        .form-label {
+            color: #adb5bd;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+        .alert {
+            border-radius: 5px;
+        }
+        .alert-danger {
+            background-color: #dc3545;
+            border-color: #c82333;
+        }
+        .alert-success {
+            background-color: #28a745;
+            border-color: #218838;
+        }
+        .form-check-label {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <h2 class="text-center mb-4">Send Signal Message</h2>
+
+        <div class="card shadow-sm mx-auto" style="max-width: 500px;">
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="selected_option" class="form-label">Select Client Group</label>
+                        <select name="selected_option" id="selected_option" class="form-select" required>
+                            <option value="A">Route</option>
+                            <option value="B">Detour</option>
+                            <option value="C">Destination</option>
+                            <option value="D">Demograph</option>
+                            <option value="M">Messenger</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="forex" class="form-label">Select Options</label>
+                        <div class="form-check">
+                            <input type="checkbox" name="forex" id="forex" class="form-check-input">
+                            <label for="forex" class="form-check-label">Forex</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" name="comex" id="comex" class="form-check-input">
+                            <label for="comex" class="form-check-label">Comex</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" name="SGX" id="SGX" class="form-check-input">
+                            <label for="SGX" class="form-check-label">SGX</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" name="busra malaysia" id="busra malaysia" class="form-check-input">
+                            <label for="busra malaysia" class="form-check-label">Busra Malaysia</label>
+                        </div>
+
+                        <div class="form-check">
+                            <input type="checkbox" name="US30" id="US30" class="form-check-input">
+                            <label for="US30" class="form-check-label">US30</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" name="HK100" id="HK100" class="form-check-input">
+                            <label for="HK100" class="form-check-label">HK100</label>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="message" class="form-label">Guidance Message</label>
+                        <textarea 
+                            name="message" 
+                            class="form-control" 
+                            id="message" 
+                            rows="4" 
+                            placeholder="Enter your advisory guidance" 
+                            required
+                        ></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Send Signals</button>
+
+                    {% if error %}
+                    <div class="alert alert-danger mt-3" role="alert">
+                        {{ error }}
+                    </div>
+                    {% endif %}
+
+                    {% if success %}
+                    <div class="alert alert-success mt-3" role="alert">
+                        {{ success }}
+                    </div>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gybQbE7U4GNRgto4a6j5ZaFbAtfG0b2+7pqqlXgDtwftU1zY5V" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js" integrity="sha384-pzjw8f+ua7Kw1TIq0t3LQb5A0DfbhOai/MzzjwfuqQ/D5kJ8i2+F7nH85ABFYDg9" crossorigin="anonymous"></script>
+</body>
+</html>
+{% endblock %}

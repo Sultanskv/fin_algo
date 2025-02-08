@@ -1,0 +1,573 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Agreement and Terms & Conditions</title>
+  <style>
+    /* Basic page settings for PDF */
+    @page {
+      size: A4;         /* or Letter, etc. */
+      margin: 2cm;
+    }
+    /* Hide .no-print content in PDF/print mode */
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #000;
+      color: #d4af37;
+      margin: 0;
+      padding: 0;
+    }
+
+.page-container {
+    width: 800px; /* Fixed width */
+    margin: 20px auto;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 10px;
+    border: 1px solid rgba(212, 175, 55, 0.5);
+    box-shadow: 0 5px 10px rgba(212, 175, 55, 0.3);
+}
+.footer .left,
+.footer .right {
+    width: 48%; /* Fixed width */
+}
+.footer .right h2 {
+    font-size: 14px; /* Adjust font size */
+}
+
+
+    .card-header {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #fff;
+    }
+    .card-header h2 {
+      margin: 0;
+      font-size: 24px;
+      text-transform: uppercase;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+    }
+
+    .card-body {
+      margin-bottom: 20px;
+    }
+    .card-body p {
+      font-size: 16px;
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+
+    /* A shared container styling for each contract section */
+    .container {
+      background: none;
+      border: none;
+      box-shadow: none;
+      width: 90%;
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 0;
+      /* 
+        Ensures each container does NOT split in half if shorter than a page.
+        If container is bigger than a page, it will still flow onto next page.
+      */
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #fff;
+    }
+    .header h1 {
+      font-size: 32px;
+      text-transform: uppercase;
+      margin: 10px 0;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+    }
+    .header img {
+      display: block;
+      margin: 0 auto 20px;
+      width: 120px;
+      height: 120px;
+      border: 3px solid #d4af37;
+      border-radius: 50%;
+    }
+
+    .details p {
+      font-size: 16px;
+      margin: 6px 0;
+      display: flex;
+      justify-content: space-between;
+      color: #f5f5f5;
+    }
+    .details span {
+      font-weight: bold;
+      color: #d4af37;
+    }
+
+    .content p,
+    .content ul li {
+      font-size: 14px;
+      color: #d4af37;
+      margin-bottom: 12px;
+      line-height: 1.6;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    }
+    .content ul {
+      list-style-type: disc;
+      padding-left: 20px;
+      margin-bottom: 20px;
+    }
+
+    .footer {
+      margin-top: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(90deg, #000, #333);
+      padding: 20px;
+      border-radius: 15px;
+      border-top: 2px solid rgba(212, 175, 55, 0.6);
+      color: #d4af37;
+    }
+    .footer .left {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 48%;
+      min-width: 200px;
+    }
+    .footer .right {
+      width: 48%;
+      min-width: 200px;
+      text-align: right;
+      margin-top: 10px;
+    }
+    .footer .left div,
+    .footer .right div {
+      font-size: 12px;
+      margin-bottom: 5px;
+      align-items: center;
+    }
+    .footer .left i {
+      margin-right: 8px;
+      color: #d4af37;
+    }
+    .footer .right img {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 10px;
+      border: 3px solid #d4af37;
+      border-radius: 50%;
+    }
+    .footer .right h2 {
+      color: #28a745;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+
+    .agreement-form {
+      background: linear-gradient(135deg, #1a1a1a, #333);
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2);
+      max-width: 600px;
+      margin: 40px auto 0 auto;
+      color: #d4af37;
+    }
+    .agreement-form input[type="text"],
+    .agreement-form input[type="email"],
+    .agreement-form textarea,
+    .agreement-form select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(212, 175, 55, 0.5);
+      background: #222;
+      color: #d4af37;
+      margin-bottom: 15px;
+      font-size: 16px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+    }
+    .agreement-form input:focus,
+    .agreement-form textarea:focus,
+    .agreement-form select:focus {
+      border-color: #fff;
+      box-shadow: 0 0 10px rgba(212, 175, 55, 0.8);
+      outline: none;
+    }
+    .btn-submit {
+      background: linear-gradient(135deg, #d4af37, #c9a037);
+      color: #000;
+      padding: 12px 30px;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s, transform 0.3s;
+      display: inline-block;
+      margin-top: 20px;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    }
+    .btn-submit:hover {
+      background: linear-gradient(135deg, #c9a037, #d4af37);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(212, 175, 55, 0.5);
+    }
+    .text-center {
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="no-print">
+    <div class="page-container">
+      <!-- Step Heading -->
+      <div class="card-header">
+        <h2>Step 2: Agreement and Terms & Conditions</h2>
+      </div>
+
+      <!-- Intro -->
+      <div class="card-body">
+        <p>Please review the following agreement and terms & conditions carefully before proceeding.</p>
+        <h4>Agreement</h4>
+        {% comment %}
+          <p>[Insert your Agreement content here]</p>
+          <h4>Terms & Conditions</h4>
+          <p>[Insert Terms & Conditions content here]</p>
+        {% endcomment %}
+      </div>
+    </div>
+  </div>
+
+
+    <!-- 1st Contract Container -->
+    <div class="container" id="contract" style="background:none; border:none; box-shadow:none;">
+      <div class="header">
+        <img src="{{ base_url }}{% static 'finowayslogo.png' %}" alt="Logo">
+        <h1>FINO WAYS LLC UAE ADVISORY CONTRACT</h1>
+      </div>
+
+      <div class="details">
+        <p><span style="color: white;">Client Name:</span> {{ client.name_first }} {{ client.name_last }}</p>
+        <p><span style="color: white;">Mobile No:</span> {{ client.phone_number }}</p>
+        <p><span style="color: white;">Email:</span> {{ client.email }}</p>
+        <p><span style="color: white;">Contact Details:</span> {{ client.email }}</p>
+        <p><span style="color: white;">Contract Duration:</span> {{ client.date_joined }} To {{ client.last_login }}</p>
+        <p><span style="color: white;">Start Date:</span> {{ client.date_joined }}</p>
+        <p><span style="color: white;">End Date:</span> {{ client.last_login }}</p>
+      </div>
+
+      <div class="content">
+        <p><span style="color: white;">Dear Mr/Miss/Mrs.</span> {{ client.name_first }} {{ client.name_last }}</p>
+        <p>
+          <strong>I. Appointment of Finoways LLC, UAE:</strong> 
+          The Client hereby appoints Finoways LLC, based in UAE, as the investment adviser for obtaining advice and tips for Forex and COMEX trading. Finoways LLC will solely provide tips and advice for investments in the Forex and COMEX markets.
+        </p>
+        <p>
+          <strong>II. Services by Finoways LLC:</strong> 
+          By executing this Agreement, the client hereby accepts all terms and conditions of the appointment of Finoways LLC as the investment adviser, effective from the date specified in the Schedule of Fees. The client agrees to appraise and review, at least quarterly during the term of this Agreement, investments of the Account, along with any additions, substitutions, or alterations thereto.
+        </p>
+        <p><strong>III. Procedure:</strong></p>
+        <ul>
+          <li>All transactions between the client and Finoways LLC are charges for services, whereby Finoways LLC will provide the client with signal and advice for the Forex and COMEX markets.</li>
+          <li>Finoways LLC shall not have custody of the client's trading accounts, and all funds/securities and transactions (buy/sell) shall be conducted between the client and their chosen broker.</li>
+          <li>Finoways LLC's executives or representatives will never request the client's trading account password. The client shall be the sole operator and decision-maker for their investments. Finoways LLC will only provide tips and advice, leaving the final investment decisions to the client. The client shall be solely responsible for all profits and losses incurred.</li>
+        </ul>
+      </div>
+
+      <div class="footer">
+        <!-- Left Section -->
+        <div class="left">
+          <div>
+            <i class="fas fa-envelope"></i>
+            <span>Email: info@finoways.com</span>
+          </div>
+          <div>
+            <i class="fas fa-phone"></i>
+            <span>Phone: +971 52 706 8772</span>
+          </div>
+          <div>
+            <i class="fas fa-map-marker-alt"></i>
+            <span>Address: Sharjah Media City Free Zone, Sharjah, UAE</span>
+          </div>
+        </div>
+        <!-- Right Section -->
+        <div class="right tick-container">
+          <img src="{{ base_url }}{% static 'sign11.jpg' %}" alt="Approved">
+          <div>{{ client.name_first }} {{ client.name_last }}</div>
+          <div>{{ client.date_joined }}</div>
+          <div>{{ client.ip_address }}</div>
+          <div>Reason: Agreement</div>
+          <h2>Signature Approved</h2>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2nd Contract Container -->
+    <div class="container" style="background:none; border:none; box-shadow:none;">
+      <div class="header">
+        <img src="{{ base_url }}{% static 'finowayslogo.png' %}" alt="Logo">
+        <h1>FINO WAYS LLC UAE ADVISORY CONTRACT</h1>
+      </div>
+
+      <div class="content">
+        <p>
+          <strong>IV.</strong> All services provided by Finoways LLC are believed to be reliable, but Finoways LLC does not accept responsibility or liability for errors or lack of opinion. Finoways LLC reserves the right to suggest trades and tips based on the client’s requirement. The Forex and COMEX markets involve inherent risks, and no guaranteed income is claimed. The information provided is based on analysis and considered reliable, but Finoways LLC does not guarantee accuracy or completeness. The client agrees to assume full responsibility for all trading decisions and outcomes.
+        </p>
+
+        <p><strong>V.</strong> The client agrees to promptly notify Finoways LLC of any changes to their address/contact details.</p>
+
+        <p><strong>VI.</strong> Forex and COMEX investments carry inherent risks. The client acknowledges and agrees to bear full responsibility for any financial profits or losses resulting from the recommendations provided by Finoways LLC.</p>
+
+        <p>
+          <strong>VII.</strong> <strong>Valuation:</strong> The client agrees to evaluate the services provided by Finoways LLC upon the completion of the minimum term of 12 months specified herein. The terms and conditions outlined in Exhibit I of this agreement shall govern the administrative aspects. The client agrees to a minimum service period of 1 month with Finoways LLC, with the option for renewal and extension.
+        </p>
+
+        <p><strong>Exhibit I:</strong> KYC Documents. To better serve the client, Finoways LLC, being a registered investment advisor in UAE, requires the following details:</p>
+        <ul>
+          <li>Proof of ID</li>
+          <li>Contract Validity</li>
+          <li>
+            Exhibit II – Legal Terms: This Agreement’s validity and the parties' rights and liabilities shall be governed by the laws of UAE. In the event of any dispute concerning the interpretation or enforcement of this Agreement, each party irrevocably agrees to abide by UAE legal jurisdiction.
+          </li>
+        </ul>
+
+        <p><strong>Exhibit III:</strong> Investment Strategies: Finoways LLC runs several strategies to diversify risks. Options-based products with algo-driven strategies shall be implemented.</p>
+
+        <p><strong>Exhibit IV:</strong> <strong>Terms & Conditions:</strong></p>
+        <ul>
+          <li>Finoways LLC provides services through WhatsApp SMS and Messenger ID only.</li>
+          <li>Phone calls will also be provided through telephone.</li>
+          <li>No separate account trading will occur unless it involves a trusted third-party firm.</li>
+          <li>Clients are urged to avoid overinvesting in risky strategies or amounts purely as Forex/COMEX markets. Always divide your whole amount into various parts before investing in the Forex and Comex market.</li>
+        </ul>
+      </div>
+
+      <div class="footer">
+        <!-- Left Section -->
+        <div class="left">
+          <div>
+            <i class="fas fa-envelope"></i>
+            <span>Email: info@finoways.com</span>
+          </div>
+          <div>
+            <i class="fas fa-phone"></i>
+            <span>Phone: +971 52 706 8772</span>
+          </div>
+          <div>
+            <i class="fas fa-map-marker-alt"></i>
+            <span>Address: Sharjah Media City Free Zone, Sharjah, UAE</span>
+          </div>
+        </div>
+        <!-- Right Section -->
+        <div class="right tick-container">
+          <img src="{{ base_url }}{% static 'sign11.jpg' %}" alt="Approved">
+          <div>{{ client.name_first }} {{ client.name_last }}</div>
+          <div>{{ client.date_joined }}</div>
+          <div>{{ client.ip_address }}</div>
+          <div>Reason: Agreement</div>
+          <h2>Signature Approved</h2>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3rd Contract Container -->
+    <div class="container" style="background:none; border:none; box-shadow:none;">
+      <div class="header">
+        <img src="{{ base_url }}{% static 'finowayslogo.png' %}" alt="Logo">
+        <h1>FINO WAYS LLC UAE ADVISORY CONTRACT</h1>
+      </div>
+
+      <div class="content">
+        <ul>
+          <li>Finoways LLC UAE doesn’t offer any account services.</li>
+          <li>Finoways LLC UAE reserves the rights, at any time, at its discretion and without prior notice, to revise, modify, add, upgrade, remove, or discontinue Content or information.</li>
+          <li>Finoways LLC UAE always believes in providing better services to its clients/customers. Therefore, we strictly suggest and urge our clients/customers not to trade in any calls without implementing <strong>STOP LOSS</strong>.</li>
+          <li>Investment in the Forex and Comex market is subject to market risk.</li>
+          <li>Transactions between you and Finoways LLC UAE shall be governed by and construed by the laws of the United Arab Emirates, without regard to its conflict of law provisions.</li>
+          <li>Any litigation regarding this agreement or any transaction between customers/clients and Finoways LLC UAE or any affiliate of it will be only against us or relating to those agreements or transactions shall be filed only in courts located in the UAE.</li>
+          <li>All services provided are believed to be reliable, but we do not accept any responsibility (or liability) for errors or lack of opinion.</li>
+          <li>We have the right to suggest the products that suit the client's requirements and needs. We do not guarantee returns and profits, nor do we provide any guaranteed income by trading in Forex and Comex markets. The information contained herein is based on analysis, and we consider them reliable.</li>
+          <li>Investments in Forex and Comex markets have their own risk. Since efforts have been made to provide tips, the markets may behave otherwise. The information contained herein is not meant to be a complete guide or investment advice.</li>
+          <li>We aim to provide the most accurate and market-relevant information, but we are not responsible for any risks arising from unexpected behavior of the market. All trades are carried out based on the investor’s decision, and the firm shall not be liable for any resulting outcomes or damages.</li>
+          <li>Finoways LLC UAE does not purport to be an invitation or an offer to buy or sell any financial instrument. Our clients (paid or unpaid), any third party, or anyone else have no rights to forward or signal SMS or Reports or any Information Provided by us to/with anyone, which is received directly or indirectly by them. If found so, then Serious Legal Actions can be taken against them.</li>
+        </ul>
+      </div>
+
+      <div class="footer">
+        <!-- Left Section -->
+        <div class="left">
+          <div>
+            <i class="fas fa-envelope"></i>
+            <span>Email: info@finoways.com</span>
+          </div>
+          <div>
+            <i class="fas fa-phone"></i>
+            <span>Phone: +971 52 706 8772</span>
+          </div>
+          <div>
+            <i class="fas fa-map-marker-alt"></i>
+            <span>Address: Sharjah Media City Free Zone, Sharjah, UAE</span>
+          </div>
+        </div>
+        <!-- Right Section -->
+        <div class="right tick-container">
+          <img src="{{ base_url }}{% static 'sign11.jpg' %}" alt="Approved">
+          <div>{{ client.name_first }} {{ client.name_last }}</div>
+          <div>{{ client.date_joined }}</div>
+          <div>{{ client.ip_address }}</div>
+          <div>Reason: Agreement</div>
+          <h2>Signature Approved</h2>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4th Contract Container -->
+    <div class="container" style="background:none; border:none; box-shadow:none;">
+      <div class="header">
+        <img src="{{ base_url }}{% static 'finowayslogo.png' %}" alt="Logo">
+        <h1>FINO WAYS LLC UAE ADVISORY CONTRACT</h1>
+      </div>
+
+      <div class="content">
+        <ul>
+          <li>
+            By accessing our services, you have read, understood, and agreed to be legally bound by the terms of the following disclaimer and user agreement of our company. The advice and signal expressed by investment experts/advisors are based on market research, but you have the sole right for all your investments and take wise investment decisions by yourselves. However, Finoways LLC UAE does not guarantee the accuracy, adequacy, or completeness of any information and is not responsible for any errors or omissions or for the results obtained from the use of such information as investment in the trading system are always subject to market risk.
+          </li>
+          <li>
+            Finoways LLC UAE is not responsible for any loss of the client in the Forex, Comex, or commodity markets at any given point by our company. Please verify the authenticity of the information/advice on your own before investing. Forex, Comex trading are inherently risky, and you are responsible for exercising full responsibility to control the level of exposure or margin that you take. Finoways LLC UAE does not warrant or guarantee that the trading methods or advisory systems presented in our services herein will always result in profits.
+          </li>
+          <li>
+            Delegation – All products and services are delivered through WhatsApp, SMS Support & messenger only. We don’t have any refund policy.
+          </li>
+          <li>
+            Investment in the Forex, Comex market is subject to market risk. Finoways LLC UAE will not be liable for any losses gained/borne by the client.
+          </li>
+          <li>
+            Finoways LLC UAE never guarantees disciplined and well-maintained strategies but the best efforts have always been exercised by the company.
+          </li>
+          <li>Jurisdiction – All courts of UAE.</li>
+          <li>
+            Forex, Comex trading are inherently risky, and you agree to assume complete and full responsibility for the outcomes of all trading decisions that you make. Finoways LLC UAE is not responsible for any trading decisions that you make and shall not be liable for any damages, losses, or harm caused to you or any entity.
+          </li>
+          <li>
+            Finoways LLC UAE does not purport to be an invitation or an offer to buy or sell any financial instrument. Our Clients (Paid or Unpaid), any third party, or anyone else has no rights to forward or signal SMS or Reports or any Information Provided by us to/with anyone, which is received directly or indirectly by them. If found so, then Serious Legal Actions can be taken against them.
+          </li>
+        </ul>
+
+        <p>
+          <strong>Disclaimer:</strong> Investment in the Forex or commodity market is subject to market risk. Finoways LLC UAE does not purport to be an invitation or an offer to buy or sell any financial instrument.
+        </p>
+      </div>
+
+      <div class="footer">
+        <!-- Left Section -->
+        <div class="left">
+          <div>
+            <i class="fas fa-envelope"></i>
+            <span>Email: info@finoways.com</span>
+          </div>
+          <div>
+            <i class="fas fa-phone"></i>
+            <span>Phone: +971 52 706 8772</span>
+          </div>
+          <div>
+            <i class="fas fa-map-marker-alt"></i>
+            <span>Address: Sharjah Media City Free Zone, Sharjah, UAE</span>
+          </div>
+        </div>
+        <!-- Right Section -->
+        <div class="right tick-container">
+          <img src="{{ base_url }}{% static 'sign11.jpg' %}" alt="Approved">
+          <div>{{ client.name_first }} {{ client.name_last }}</div>
+          <div>{{ client.date_joined }}</div>
+          <div>{{ client.ip_address }}</div>
+          <div>Reason: Agreement</div>
+          <h2>Signature Approved</h2>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5th Contract Container -->
+    <div class="container" style="background:none; border:none; box-shadow:none;">
+      <div class="header">
+        <img src="{{ base_url }}{% static 'finowayslogo.png' %}" alt="Logo">
+        <h1>FINO WAYS LLC UAE ADVISORY CONTRACT</h1>
+      </div>
+
+      <div class="content">
+        <p>
+          Our Clients (Paid or Unpaid), any third party, or anyone else have no rights to forward SMS or Reports or Any Information Provided by us to/with anyone, which is received directly or indirectly by them. If found so, then Serious Legal Actions can be taken against them.
+        </p>
+
+        <p><strong>Note:</strong></p>
+        <ul>
+          <li>
+            Finoways LLC UAE doesn’t provide a guarantee of profit from your investment, as the Forex and commodity markets are not places for providing guarantees.
+          </li>
+          <li>
+            The client has agreed that under no circumstances will Finoways LLC UAE be liable for any damages, whether direct, indirect, incidental, consequential, special, punitive, or exemplary damages (collectively, the "excluded damages"), arising out of or in any way connected with your use of or inability to use our services, including but not limited to loss of revenue, trading losses, anticipated profits, savings, any failure of performance, denial of service, attack, interruption, defect, operational error, inconvenience, or delays in operation or transmission of data, computer virus, failure of electronic or mechanical equipment or communications lines severe weather (including flood, earthquake, or other act of God); fire, wars, or extraordinary weather; theft, destruction, or unauthorized access to, alteration or use of your information.
+          </li>
+          <li>
+            In no event, or under event, if Finoways LLC UAE parties have been advised will we be responsible for or liable for any excluded damages. Further, the parties will not be responsible for any failure to comply, by you or any third party, with these terms or with applicable federal and local laws.
+          </li>
+        </ul>
+
+        <p>
+          Client and Advisor both jointly adopt this Investment Advisory Contract and Investment Policy Statement. It is agreed that the Investment Policy Statement is a:
+        </p>
+      </div>
+
+      <div class="footer">
+        <!-- Left Section -->
+        <div class="left">
+          <div>
+            <i class="fas fa-envelope"></i>
+            <span>Email: info@finoways.com</span>
+          </div>
+          <div>
+            <i class="fas fa-phone"></i>
+            <span>Phone: +971 52 706 8772</span>
+          </div>
+          <div>
+            <i class="fas fa-map-marker-alt"></i>
+            <span>Address: Sharjah Media City Free Zone, Sharjah, UAE</span>
+          </div>
+        </div>
+        <!-- Right Section -->
+        <div class="right tick-container">
+          <img src="{{ base_url }}{% static 'sign11.jpg' %}" alt="Approved">
+          <div>{{ client.name_first }} {{ client.name_last }}</div>
+          <div>{{ client.date_joined }}</div>
+          <div>{{ client.ip_address }}</div>
+          <div>Reason: Agreement</div>
+          <h2>Signature Approved</h2>
+        </div>
+      </div>
+    </div>
+    <div class="no-print">
+    <!-- Agreement Form -->
+    <form method="POST" class="agreement-form">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <div class="text-center">
+        <a href="{% url 'download_pdf' %}">Download Agreement PDF</a>
+        <button type="submit" class="btn-submit">Next</button>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

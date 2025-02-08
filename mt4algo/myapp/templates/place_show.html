@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trade History</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Open Trades</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Ticket</th>
+                <th>Time</th>
+                <th>Symbol</th>
+                <th>Volume</th>
+                <th>Price Open</th>
+                <th>Price Current</th>
+                <th>SL</th>
+                <th>TP</th>
+                <th>Profit</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for trade in open_trades %}
+            <tr>
+                <td>{{ trade.ticket }}</td>
+                <td>{{ trade.time }}</td>
+                <td>{{ trade.symbol }}</td>
+                <td>{{ trade.volume }}</td>
+                <td>{{ trade.price_open }}</td>
+                <td>{{ trade.price_current }}</td>
+                <td>{{ trade.sl }}</td>
+                <td>{{ trade.tp }}</td>
+                <td>{{ trade.profit }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h1>Trade History</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Ticket</th>
+                <th>Time</th>
+                <th>Symbol</th>
+                <th>Volume</th>
+                <th>Type</th>
+                <th>Price</th>
+                <th>SL</th>
+                <th>TP</th>
+                <th>Profit</th>
+                <th>Change</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for deal in history %}
+            <tr>
+                <td>{{ deal.ticket }}</td>
+                <td>{{ deal.time }}</td>
+                <td>{{ deal.symbol }}</td>
+                <td>{{ deal.volume }}</td>
+                <td>{{ deal.type }}</td>
+                <td>{{ deal.price }}</td>
+                <td>{{ deal.sl }}</td>
+                <td>{{ deal.tp }}</td>
+                <td>{{ deal.profit }}</td>
+                <td>{{ deal.change }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

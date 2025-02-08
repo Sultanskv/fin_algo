@@ -1,0 +1,246 @@
+{% extends 'admin_base.html' %}
+
+{% block main %}
+<style>
+    /* General Styling */
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #000000;
+        color: #FFD700;
+        margin: 0;
+        padding: 0;
+    }
+
+    .form-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 15px 0;
+        gap: 15px;
+    }
+
+    .form-group {
+        text-align: center;
+        flex: 1;
+    }
+
+    .form-control {
+        border-radius: 50px;
+        padding: 10px;
+        background-color: #000000;
+        color: #FFD700;
+        border: 1px solid #FFD700;
+        transition: all 0.3s;
+    }
+
+    .form-control:focus {
+        border-color: #FFD700;
+        box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+    }
+
+    .btn {
+        border-radius: 50px;
+        padding: 10px 20px;
+        background-color: #c8a900;
+        color: #000000;
+        border: none;
+        transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .btn:hover {
+        background-color: #ffc107;
+        transform: scale(1.05);
+    }
+
+    .table-container {
+        overflow-x: auto;
+        margin-top: 20px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #000000;
+        color: #FFD700;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(255, 215, 0, 0.1);
+    }
+
+    th, td {
+        text-align: center;
+        padding: 10px;
+        border-bottom: 1px solid #FFD700;
+    }
+
+    th {
+        background-color: #FFD700;
+        color: #000000;
+        font-weight: bold;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    td {
+        font-size: 14px;
+        color: #FFD700;
+    }
+
+    .card {
+        border: none;
+        border-radius: 10px;
+        background-color: #000000;
+        box-shadow: 0 4px 8px rgba(255, 215, 0, 0.1);
+        margin-bottom: 20px;
+    }
+
+    .card-header {
+        background-color: #FFD700;
+        color: #000000;
+        padding: 15px;
+        border-radius: 10px 10px 0 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .card-body {
+        padding: 15px;
+    }
+
+    @media (max-width: 768px) {
+        .form-row {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .form-group {
+            max-width: 90%;
+        }
+
+        .btn {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 576px) {
+        th, td {
+            font-size: 12px;
+        }
+
+        .card-header h4 {
+            font-size: 16px;
+        }
+
+        .btn {
+            font-size: 14px;
+        }
+    }
+</style>
+
+<div class="form-row">
+    <div class="form-group">
+        <label for="type">Client Type</label>
+        <select class="form-control" name="type" id="type" required>
+            <option value="All">All</option>
+            <option value="Demo">Demo</option>
+            <option value="Live">Live</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="type">Trading On/Off</label>
+        <select class="form-control" name="type" id="type" required>
+            <option value="All">All</option>
+            <option value="BUY_ENTRY">On</option>
+            <option value="BUY_EXIT">Off</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="type">Strategy Client</label>
+        <select class="form-control" name="type" id="type" required>
+            <option value="All">All</option>
+            <option value="Demo">Demo</option>
+            <option value="Proton1">Proton1</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <input type="text" name="search_query" class="form-control" placeholder="Search by Name or Email" value="{{ search_query }}">
+    </div>
+
+    <div class="form-group">
+        <input type="date" name="from_date" class="form-control" value="{{ from_date }}">
+    </div>
+
+    <div class="form-group">
+        <input type="date" name="to_date" class="form-control" value="{{ to_date }}">
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn">Search</button>
+        <a href="{% url 'download_pdf' %}?from_date={{ from_date }}&to_date={{ to_date }}&search_query={{ search_query }}" class="btn">Download PDF</a>
+    </div>
+</div>
+
+<div class="content">
+    <div class="card">
+        <div class="card-header">
+            <h4>Client List</h4>
+            <a href="{% url 'registration' %}" class="btn">Add New Client</a>
+        </div>
+        <div class="card-body">
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Actions</th>
+                            <th>Id</th>
+                            <th>User ID</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Email</th>
+                            <th>Password</th>
+                            <th>Phone Number</th>
+                            <th>Verify Code</th>
+                            <th>Date Joined</th>
+                            <th>Last Login</th>
+                            <th>Is Staff</th>
+			    <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for clients in clientdetail %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'client_view' clients.user_id %}" class="btn btn-success">Dashboard</a>
+                                <a href="{% url 'update_client' user_id=clients.user_id %}" class="btn btn-primary">Update</a>
+                                <form action="{% url 'delete_client' clients.user_id %}" method="post" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </td>
+                            <td>{{ clients.id }}</td>
+                            <td>{{ clients.user_id }}</td>
+                            <td>{{ clients.name_first }}</td>
+                            <td>{{ clients.name_last }}</td>
+                            <td>{{ clients.email }}</td>
+                            <td>{{ clients.password }}</td>
+                            <td>{{ clients.phone_number }}</td>
+                            <td>{{ clients.verify_code }}</td>
+                            <td>{{ clients.date_joined }}</td>
+                            <td>{{ clients.last_login }}</td>
+                            <td>{{ clients.is_staff }}</td>
+			    <td>{{ clients.clint_status }}</td>
+
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,180 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <title>admin panel</title>
+    {% comment %} bootstrap datatable with export buttons {% endcomment %}
+    <script src= "https://cdn.datatables.net/2.0.6/js/dataTables.js"></script>                  
+    <script src= "https://cdn.datatables.net/buttons/3.0.2/js/dataTables.buttons.js"></script>
+    <script src= "https://cdn.datatables.net/buttons/3.0.2/js/buttons.dataTables.js"></script>
+    <script src= "https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src= "https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src= "https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src= "https://cdn.datatables.net/buttons/3.0.2/js/buttons.html5.min.js"></script>       
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.6/css/dataTables.dataTables.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.0.2/css/buttons.dataTables.css">
+
+    <style>
+.sidebar {
+    background-color: #181818; /* Dark background color */
+    padding: 20px;
+    height: 100vh; /* Full height */
+    position: sticky; /* Stick to the top */
+    top: 0;
+    border-right: 1px solid #333; /* Subtle border for separation */
+    overflow-y: auto; /* Scrollable if content overflows */
+}
+
+.sidebar img {
+    border: 3px solid #007bff; /* Border color for the logo */
+    border-radius: 50%; /* Circular image */
+    transition: border-color 0.3s ease;
+}
+
+.table {
+  color: #fff;
+}
+.sidebar img:hover {
+    border-color: #00d1b2; /* Change border color on hover */
+}
+
+.list-group {
+    margin-top: 20px; /* Space above the list */
+}
+
+.list-group-item {
+    color: #ffffff; /* Light text color */
+    padding: 15px; /* Padding for list items */
+    transition: background-color 0.3s ease, transform 0.2s; /* Smooth transition */
+    border-radius: 5px; /* Rounded corners */
+}
+
+.list-group-item:hover {
+    background-color: #007bff; /* Highlight on hover */
+    transform: scale(1.05); /* Slightly scale up on hover */
+}
+
+.list-group-item.active {
+    background-color: #0056b3; /* Active item background */
+    color: #fff; /* Active item text color */
+}
+
+.icon {
+    margin-right: 10px; /* Space between icon and text */
+    font-size: 1.5rem; /* Increased icon size */
+    color: #f1f1f1; /* Icon color */
+}
+
+.list-group-item:focus {
+    outline: none; /* Remove outline on focus */
+    box-shadow: 0 0 5px #007bff; /* Add glow on focus */
+}
+.icon {
+    margin-right: 10px; /* Space between icon and text */
+    font-size: 1.2rem; /* Adjust icon size */
+}
+.container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+  background-color: black;
+  color: #fff;
+}
+.card {
+  position: relative;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  background-color: #2a2a2a;
+  background-clip: border-box;
+  border: 1px solid rgba(0,0,0,.125);
+  border-radius: .25rem;
+  color: #fff;
+}
+.list-group-item-warning {
+  color: #ffffff;
+  background-color: #000;
+</style>
+  </head>
+  <body style="height: 100%;background-color: #0000006e;">
+    
+      <div class="container-fluid">
+       <div class="row">  
+        <div class="col-sm-2 p-0 sidebar">
+          <center><img src="{% static 'finowayslogo.png' %}" width="250" height="250" class="img-thumbnail rounded-circle my-3" style="border: 2px solid transparent; transition: border-color 0.3s; background-color: #fff;" onmouseover="this.style.borderColor='#007bff'; this.style.backgroundColor='#f0f0f0';" onmouseout="this.style.borderColor='transparent'; this.style.backgroundColor='#fff';"></center>
+
+            {% comment %} list-group-item-warning {% endcomment %}
+            <div class="list-group">
+              <a href="{% url 'admin_dashboard' %}" class="list-group-item list-group-item-warning list-group-item-action {% if request.path == '/admin_dashboard/' %} active {% endif %}">
+                  <span class="icon">&#127968;</span> Dashboard
+              </a>
+              <a href="{% url 'trade_form' %}" class="list-group-item list-group-item-warning list-group-item-action {% if request.path == '/trade_form/' %} active {% endif %}">
+                <span class="icon">&#9881;</span> Place Order
+              </a>
+              <a href="{% url 'admin_message' %}" class="list-group-item list-group-item-warning list-group-item-action {% if request.path == '/admin_message/' %} active {% endif %}">
+                  <span class="icon">&#9993;</span> Message
+              </a>
+              <a href="{% url 'admin_thistory' %}" class="list-group-item list-group-item-warning list-group-item-action {% if request.path == '/admin_thistory/' %} active {% endif %}">
+                  <span class="icon">&#128202;</span> Trade History
+              </a>
+              <a href="{% url 'client_status_admin'  %}" class="list-group-item list-group-item-warning list-group-item-action {% if request.path == '/client_status_admin/' %} active {% endif %}">
+                  <span class="icon">&#128200;</span> Trading Status
+              </a>
+              <a href="{% url 'client_list' %}" class="list-group-item list-group-item-warning list-group-item-action {% if request.path == '/client_list/' %} active {% endif %}">
+                  <span class="icon">&#128101;</span> Client List
+              </a>
+              </a>
+              <a href="{% url 'kyc_list' %}" class="list-group-item list-group-item-warning list-group-item-action {% if request.path == '/kyc/' %} active {% endif %}">
+                <span class="icon">&#128101;</span> kyc List
+              </a>  
+              <a href="{% url 'subadmin_list' %}" class="list-group-item list-group-item-warning list-group-item-action {% if request.path == '/subadmin_list/' %} active {% endif %}">
+                <span class="icon">&#128101;</span> Sub-Admin List
+              </a>
+
+              <a href="{% url 'Subadmin_client_limit_list' %}" class="list-group-item list-group-item-warning list-group-item-action {% if request.path == '/Subadmin_client_limit_list/' %} active {% endif %}">
+                <span class="icon">&#128101;</span> Sub-Admin Limit
+              </a>
+              <a href="{% url 'subadmin_offers_list' %}" class="list-group-item list-group-item-warning list-group-item-action {% if request.path == request.build_absolute_uri %} active {% endif %}">
+                <span class="icon">&#128101;</span> Sub-Admin Offer List
+              </a>
+              <a href="{% url 'admin_help_center' %}" class="list-group-item list-group-item-warning list-group-item-action {% if request.path == '/admin_help_center/' %} active {% endif %}">
+                  <span class="icon">&#10067;</span> Help Center
+              </a>
+              <a href="{% url 'Settings' %}" class="list-group-item list-group-item-warning list-group-item-action {% if request.path == '/settings/' %} active {% endif %}">
+                  <span class="icon">&#9881;</span> Settings
+              </a>
+              <a href="{% url 'logoutAdmin' %}" class="list-group-item list-group-item-warning list-group-item-action {% if request.path == '/adminlogout/' %} active {% endif %}">
+                  <span class="icon">&#128682;</span> Logout
+              </a>
+          </div>
+        </div>
+        {% comment %} container start {% endcomment %}
+        <div class="col-sm-10 p-2">
+            <div class="container-fluid p-2">
+                 <h5 class="text-center p-3 font-weight-bold" style="border-top : 2px solid green; border-bottom : 2px solid green">Admin </h5>
+                <div class="card shadow" style="min-height: 89vh">
+                    <div class="card-body">
+                    {% block main %}
+
+                    {% endblock %} 
+                    </div>
+                </div>
+                </div>
+         </div>
+
+
+       </div>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+  </body>
+</html>

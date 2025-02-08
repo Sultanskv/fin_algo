@@ -1,0 +1,142 @@
+{% extends 'admin_base.html' %}
+
+{% block main %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detailed Trade Logs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000; /* Black background */
+            color: #fff; /* White text */
+            margin: 0;
+            padding: 0;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #f0c14b; /* Golden color */
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            border: 1px solid #f0c14b; /* Golden border */
+            animation: slideIn 1.5s ease-in-out;
+        }
+
+        table th, table td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #f0c14b; /* Golden border */
+        }
+
+        table th {
+            background-color: #f0c14b; /* Golden header */
+            color: #000; /* Black text */
+        }
+
+        table tr:nth-child(even) {
+            background-color: #121212; /* Darker black for alternate rows */
+        }
+
+        table tr:hover {
+            background-color: #f0c14b; /* Golden highlight on hover */
+            color: #000;
+        }
+
+        a {
+            display: inline-block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #f0c14b; /* Golden button */
+            color: #000; /* Black text */
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        a:hover {
+            background-color: #d4a217; /* Darker golden on hover */
+            transform: scale(1.1);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Trade Log Details</h1>
+    <h2>{{ log_type|capfirst }} Logs</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Client ID</th>
+                <th>Symbol</th>
+                {% if log_type == "execution" %}
+                <th>Order Type</th>
+                <th>Volume</th>
+                <th>Price</th>
+                <th>Stop Loss</th>
+                <th>Take Profit</th>
+                <th>Comment</th>
+                {% elif log_type == "close" %}
+                <th>Position ID</th>
+                {% endif %}
+                <th>Success</th>
+                <th>Error Reason</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}
+            <tr>
+                <td>{{ log.client.user_id }}</td>
+                <td>{{ log.symbol }}</td>
+                {% if log_type == "execution" %}
+                <td>{{ log.order_type }}</td>
+                <td>{{ log.volume }}</td>
+                <td>{{ log.price }}</td>
+                <td>{{ log.stop_loss }}</td>
+                <td>{{ log.take_profit }}</td>
+                <td>{{ log.comment }}</td>
+                {% elif log_type == "close" %}
+                <td>{{ log.position_id }}</td>
+                {% endif %}
+                <td>{{ log.success }}</td>
+                <td>{{ log.error_reason }}</td>
+                <td>{{ log.timestamp }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{% url 'trade_summary' %}">Back to Summary</a>
+</body>
+</html>
+
+{% endblock %}

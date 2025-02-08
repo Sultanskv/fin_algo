@@ -1,0 +1,485 @@
+{% extends 'admin_base.html' %}
+
+{% block main %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trade Execution</title>
+    <style>
+        /* Existing CSS styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            position: relative;
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .container h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #3b82f6;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        input[type="text"], select {
+            background: #2e3a48;
+            color: #fff;
+        }
+
+        button {
+            background: #3b82f6;
+            color: #fff;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #2563eb;
+        }
+
+        .form-section {
+            margin-bottom: 20px;
+            flex: 1;
+            margin: 10px;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            background-color: #2a2a2a;
+        }
+
+        .form-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .close-form {
+            flex: 1;
+            margin: 10px;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            background-color: #2a2a2a;
+        }
+
+        .close-form h1 {
+            font-size: 20px;
+            color: #f87171;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            input, select, button {
+                font-size: 12px;
+            }
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #1e293b;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 8px;
+            position: relative;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from {opacity: 0;}
+            to {opacity: 1;}
+        }
+
+        .close {
+            color: #aaa;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #fff;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-header {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #3b82f6;
+        }
+
+        .modal-body {
+            font-size: 16px;
+            color: #fff;
+        }
+
+        .success {
+            color: #34d399;
+        }
+
+        .error {
+            color: #f87171;
+        }
+
+        /* Loading Overlay Styles */
+        .loading-overlay {
+            display: none; /* Hidden by default */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(30, 41, 59, 0.8); /* Semi-transparent background */
+            z-index: 999; /* Above the container */
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+        }
+
+        .spinner {
+            border: 8px solid #f3f3f3; /* Light grey */
+            border-top: 8px solid #3b82f6; /* Blue */
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+    </style>
+    <script>
+        // Function to fetch the market price for the selected symbol
+        async function fetchMarketPrice(symbol, orderType) {
+            try {
+                const response = await fetch(`/get_market_price?symbol=${encodeURIComponent(symbol)}&order_type=${encodeURIComponent(orderType)}`);
+                const data = await response.json();
+                if (data.success) {
+                    document.getElementById('price').value = data.price.toFixed(2);
+                } else {
+                    document.getElementById('price').value = "Error fetching price";
+                }
+            } catch (error) {
+                console.error("Error fetching market price:", error);
+                document.getElementById('price').value = "Error";
+            }
+        }
+
+        // Function to toggle the readonly state of the price field
+        function togglePriceField(orderType) {
+            const priceInput = document.getElementById('price');
+            const symbol = document.getElementById('symbol').value.trim();
+
+            if (orderType === 'LIMIT_BUY' || orderType === 'LIMIT_SELL') {
+                priceInput.readOnly = false;
+                priceInput.placeholder = "Enter your desired price";
+            } else {
+                priceInput.readOnly = true;
+                priceInput.placeholder = "Auto-filled based on symbol";
+                if (symbol) {
+                    fetchMarketPrice(symbol, orderType);
+                } else {
+                    priceInput.value = "";
+                }
+            }
+        }
+
+        // Function to show modal with message
+        function showModal(title, message, isSuccess) {
+            const modal = document.getElementById('myModal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalBody = document.getElementById('modal-body');
+
+            modalTitle.textContent = title;
+            modalBody.innerHTML = message;
+
+            modal.style.display = 'flex';
+        }
+
+        // Function to close the modal
+        function closeModal() {
+            const modal = document.getElementById('myModal');
+            modal.style.display = 'none';
+        }
+
+        // Function to show loading overlay
+        function showLoading() {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            loadingOverlay.style.display = 'flex';
+        }
+
+        // Function to hide loading overlay
+        function hideLoading() {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            loadingOverlay.style.display = 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const symbolInput = document.getElementById('symbol');
+            const orderTypeSelect = document.getElementById('order_type');
+
+            symbolInput.addEventListener('blur', () => {
+                const symbol = symbolInput.value.trim();
+                const orderType = orderTypeSelect.value;
+                if (symbol && !(orderType === 'LIMIT_BUY' || orderType === 'LIMIT_SELL')) {
+                    fetchMarketPrice(symbol, orderType);
+                }
+            });
+
+            orderTypeSelect.addEventListener('change', () => {
+                const symbol = symbolInput.value.trim();
+                const orderType = orderTypeSelect.value;
+                togglePriceField(orderType);
+            });
+
+            // Initialize the price field based on the default order type
+            togglePriceField(orderTypeSelect.value);
+
+            // Handle Close Positions Form Submission
+            const closeForm = document.getElementById('close-form');
+            closeForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                showLoading(); // Show loading animation
+
+                const symbol = document.getElementById('close_symbol').value.trim();
+
+                if (!symbol) {
+                    hideLoading(); // Hide loading animation
+                    showModal('Error', 'Symbol is required.', false);
+                    return;
+                }
+
+                try {
+                    const response = await fetch("{% url 'close_positions_by_symbol' %}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}',
+                        },
+                        body: JSON.stringify({ symbol }),
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        let message = 'All open positions closed successfully.';
+                        if (data.results && data.results.length > 0) {
+                            message += '<ul>';
+                            data.results.forEach(result => {
+                                if (result.success) {
+                                    message += `<li class="success">Client ${result.client_id}: Success</li>`;
+                                } else {
+                                    message += `<li class="error">Client ${result.client_id}: ${result.error}</li>`;
+                                }
+                            });
+                            message += '</ul>';
+                        }
+                        showModal('Success', message, true);
+                    } else {
+                        showModal('Error', data.error || 'An error occurred while closing positions.', false);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    showModal('Error', 'An unexpected error occurred.', false);
+                } finally {
+                    hideLoading(); // Hide loading animation
+                }
+            });
+
+            // Handle Place Trade Form Submission
+            const tradeForm = document.getElementById('trade-form');
+            tradeForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                showLoading(); // Show loading animation
+
+                // Collect form data
+                const formData = new FormData(tradeForm);
+
+                try {
+                    const response = await fetch("{% url 'place_trade' %}", {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': '{{ csrf_token }}',
+                        },
+                        body: formData,
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        let message = `<p class="success">Trade placed successfully.</p>
+                                       <p>Total Trades: ${result.total_trades}</p>
+                                       <p>Success: ${result.success_count}</p>
+                                       <p>Failed: ${result.fail_count}</p>`;
+
+                        if (result.results && result.results.length > 0) {
+                            message += '<ul>';
+                            result.results.forEach(tradeResult => {
+                                if (tradeResult.success) {
+                                    message += `<li class="success">Client ${tradeResult.client_id}: Success</li>`;
+                                } else {
+                                    message += `<li class="error">Client ${tradeResult.client_id}: ${tradeResult.error}</li>`;
+                                }
+                            });
+                            message += '</ul>';
+                        }
+                        showModal('Success', message, true);
+                        tradeForm.reset();
+                        togglePriceField(document.getElementById('order_type').value); // Reset price field
+                    } else {
+                        showModal('Error', result.error || 'An error occurred while placing the trade.', false);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    showModal('Error', 'An unexpected error occurred.', false);
+                } finally {
+                    hideLoading(); // Hide loading animation
+                }
+            });
+
+            // Event listener for closing the modal
+            const modal = document.getElementById('myModal');
+            const closeBtn = document.getElementsByClassName('close')[0];
+
+            closeBtn.onclick = closeModal;
+
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    closeModal();
+                }
+            }
+        });
+    </script>
+</head>
+<body>
+    <h1>Trade Execution</h1>
+    <div class="container">
+        <!-- Loading Overlay -->
+        <div id="loadingOverlay" class="loading-overlay">
+            <div class="spinner"></div>
+        </div>
+
+
+        <!-- Trade Form Section -->
+        <div class="form-section">
+            <form id="trade-form" method="post" action="{% url 'place_trade' %}">
+                {% csrf_token %}
+                <label for="symbol">Symbol:</label>
+                <input type="text" id="symbol" name="symbol" placeholder="Enter symbol (e.g., BTCUSDm)" required>
+
+                <label for="order_type">Order Type:</label>
+                <select id="order_type" name="order_type">
+                    <option value="MARKET_BUY">Market Buy</option>
+                    <option value="MARKET_SELL">Market Sell</option>
+                    <option value="LIMIT_BUY">Limit Buy</option>
+                    <option value="LIMIT_SELL">Limit Sell</option>
+                </select>
+
+                <label for="price">Price:</label>
+                <input type="text" id="price" name="price" readonly placeholder="Auto-filled based on symbol">
+
+                <label for="stop_loss">Stop Loss:</label>
+                <input type="text" id="stop_loss" name="stop_loss" placeholder="Optional">
+
+                <label for="take_profit">Take Profit:</label>
+                <input type="text" id="take_profit" name="take_profit" placeholder="Optional">
+
+                <label for="comment">Comment:</label>
+                <input type="text" id="comment" name="comment" value="FinoFxAlgo" readonly>
+                
+                <button type="submit">Place Trade</button>
+            </form>
+        </div>
+
+        <!-- Close Positions Form Section -->
+        <div class="close-form">
+            <h1>Close Open Positions</h1>
+            <form id="close-form" method="post" action="{% url 'close_positions_by_symbol' %}">
+                {% csrf_token %}
+                <label for="close_symbol">Symbol:</label>
+                <input type="text" id="close_symbol" name="symbol" placeholder="Enter symbol (e.g., BTCUSDm)" required>
+                <button type="submit">Close Trades</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Structure -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="modal-header" id="modal-title">Title</div>
+            <div class="modal-body" id="modal-body">
+                <!-- Message will be injected here -->
+            </div>
+        </div>
+    </div>
+    <form action="{% url 'update_trade_history' %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Update Trade History</button>
+    </form>
+</body>
+</html>
+
+{% endblock %}

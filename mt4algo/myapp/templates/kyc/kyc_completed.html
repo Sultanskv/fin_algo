@@ -1,0 +1,16 @@
+{% extends 'client_base.html' %}
+{% load static %}
+{% block main %}
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header text-center">
+            <h2>KYC Process Completed</h2>
+        </div>
+        <div class="card-body text-center">
+            <p>Congratulations! You have successfully completed the KYC process.</p>
+            <p>You will receive a confirmation email shortly with further details.</p>
+            <a href="{% url 'client_login' %}" class="btn btn-success mt-3">Go to Dashboard</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

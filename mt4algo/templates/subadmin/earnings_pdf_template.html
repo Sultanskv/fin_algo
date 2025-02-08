@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h2>Earning List</h2>
+    <p><strong>Total Revenue:</strong> ${{ subadmin.total_revenue }}</p>
+    <p><strong>Earnings:</strong> ${{ subadmin.earnings }}</p>
+
+    {% if earnings %}
+    <table>
+        <thead>
+            <tr>
+                <th>Payer Name</th>
+                <th>Email</th>
+                <th>Pay Amount</th>
+                <th>Payment Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for earning in earnings %}
+            <tr>
+                <td>{{ earning.name_first }} {{ earning.name_last }}</td>
+                <td>{{ earning.payer_email }}</td>
+                <td>${{ earning.pay_amount }}</td>
+                <td>{{ earning.payment_date }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No earnings found.</p>
+    {% endif %}
+</body>
+</html>

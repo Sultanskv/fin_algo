@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<script>
+  function checkpassword() {
+    if (document.signup.pwd.value !== document.signup.cpwd.value) {
+      alert('Password and Confirm Password do not match');
+      document.signup.cpwd.focus();
+      return false;
+    }
+    return true;
+  }
+</script>
+<style>
+.card {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex
+;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #2a2a2a;
+    background-clip: border-box;
+    border: 1px solid rgba(0, 0, 0, .125);
+    border-radius: .25rem;
+}
+</style>
+
+<div class="card shadow m-5">
+  <div class="card-body">
+    <h5 class="p-2" style="border-bottom: 2px solid orange">Create an Account</h5>
+    {% if msg %}
+    <h4 style="color: red; text-align: center;">{{ msg }}</h4>
+    {% endif %}
+
+    <div class="container-fluid">
+      <form method="post" name="signup" onsubmit="return checkpassword();">
+        {% csrf_token %}
+        <div class="form-row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>First Name</label>
+              <input type="text" name="fname" class="form-control" required placeholder="Enter First Name">
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Last Name</label>
+              <input type="text" name="lname" class="form-control" required placeholder="Enter Last Name">
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" name="email" class="form-control" required placeholder="Enter Email">
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Phone Number</label>
+              <input type="phone" name="phone" class="form-control" required placeholder="Enter Phone Number">
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Password</label>
+              <input type="password" name="pwd" class="form-control" required placeholder="Enter Password">
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Confirm Password</label>
+              <input type="password" name="cpwd" class="form-control" required placeholder="Confirm Password">
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>From Date</label>
+              <input type="datetime-local" name="fromdate" class="form-control" required>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>To Date</label>
+              <input type="datetime-local" name="todate" class="form-control" required>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="selected_option">Select Option</label>
+              <select name="selected_option" class="form-control">
+                {% for value, label in ClientDetail_OPTIONS %}
+                <option value="{{ value }}">{{ label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label><input type="checkbox" name="user_active" value="True"> Activate User When Kyc is not Done</label>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label><input type="checkbox" name="forex_option" value="True"> Forex Option</label>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group">
+              <label><input type="checkbox" name="comex_option" value="True"> Comex Option</label>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group">
+              <label><input type="checkbox" name="Singapore" value="True"> Singapore</label>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group">
+              <label><input type="checkbox" name="Bursa_Malaysia" value="True"> Bursa Malaysia</label>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group">
+              <label><input type="checkbox" name="US30" value="True"> US30</label>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group">
+              <label><input type="checkbox" name="HK100" value="True"> HK100</label>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>MT Account ID</label>
+              <input type="text" name="MataApi_ACCOUNT_ID" class="form-control" placeholder="Enter MT Account ID">
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>MT Token</label>
+              <input type="password" name="MataApi_TOKEN" class="form-control" placeholder="Enter MT Token">
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>MT Account Link</label>
+              <input type="text" name="MataApi_account_link" class="form-control" placeholder="Enter MT Account Link">
+            </div>
+          </div>
+        </div>
+
+        <input type="submit" value="Register" class="btn btn-primary mt-3">
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

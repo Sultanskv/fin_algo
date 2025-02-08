@@ -1,0 +1,19 @@
+{% extends "client_base.html" %}
+
+{% block main %}
+<div class="content">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Fetch MT5 Symbols</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">Fetch Symbols</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

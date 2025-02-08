@@ -1,0 +1,40 @@
+{% extends 'admin_base.html' %}
+
+{% block main %}
+<div class="container">
+    <h1>Trade History</h1>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>ENTRY TIME</th>
+                <th>SYMBOL</th>
+                <th>TYPE</th>
+                <th>QUANTITY</th>
+                <th>ENTRY PRICE</th>
+                <th>EXIT TIME</th>
+                <th>EXIT PRICE</th>
+                <th>P & L</th>
+                <th>Cumulative P & L</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for trade in trades %}
+            <tr>
+                <td>{{ trade.id }}</td>
+                <td>{{ trade.signal_time }}</td>
+                <td>{{ trade.symbol }}</td>
+                <td>{{ trade.trade_type }}</td>
+                <td>{{ trade.quantity }}</td>
+                <td>{{ trade.entry_price }}</td>
+                <td>{{ trade.exit_time }}</td>
+                <td>{{ trade.exit_price }}</td>
+                <td>{{ trade.p_l }} $</td>
+                <td>{{ trade.cumulative_p_l }} $</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <h3>Total cumulative P&L: {{ total_cumulative_p_l }}$</h3>
+</div>
+{% endblock %}

@@ -1,0 +1,190 @@
+{% extends 'client_base.html' %}
+{% load static %}
+{% block main %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KYC Video Recording</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-XXXX" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
+
+
+    <style>
+        body {
+            background-color: #000000;
+            margin-bottom: 120px;
+        }
+        .form-container {
+            margin-top: 50px;
+        }
+        .form-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .card {
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .video-preview {
+            margin-top: 20px;
+            border: 1px solid #000000;
+            border-radius: 5px;
+        }
+        .btn-group {
+            margin-top: 10px;
+        }
+        #timer {
+            font-size: 1.2em;
+            margin-top: 10px;
+            color: #28a745; /* Green color for timer */
+        }
+        .btn {
+            width: 100%;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container form-container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="form-header">
+                    <h3>KYC Video Recording</h3>
+                </div>
+
+                <!-- Video Recording Section -->
+                <div class="video-recorder">
+                    <video id="preview" class="video-preview" width="100%" height="240" autoplay muted></video>
+                    <div class="btn-group">
+                        <button id="startBtn" class="btn btn-primary"><i class="fas fa-record-vinyl"></i> Start Recording</button>
+                        <button id="stopBtn" class="btn btn-danger" disabled><i class="fas fa-stop"></i> Stop Recording</button>
+                    </div>
+                    <div id="timer" hidden>00:00</div>
+                </div>
+                <p>Please read the following text: "{{text}}"</p>
+                
+                <!-- Preview recorded video -->
+                <div class="mt-4">
+                    <video id="recordedVideo" class="video-preview" controls></video>
+                </div>
+
+                <!-- Upload button -->
+                <button class="btn btn-success" id="uploadBtn" disabled><i class="fas fa-upload"></i> Upload KYC Video</button>
+
+                <!-- Display messages -->
+                <div id="message" class="mt-3"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const startBtn = document.getElementById('startBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const preview = document.getElementById('preview');
+    const recordedVideo = document.getElementById('recordedVideo');
+    const messageDiv = document.getElementById('message');
+    const timerDiv = document.getElementById('timer');
+
+    let mediaRecorder;
+    let recordedChunks = [];
+    let recordingTime = 0;
+    let timerInterval;
+
+    // Access the user's camera and microphone
+    async function getMediaStream() {
+        return await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    }
+
+    // Start recording
+    startBtn.addEventListener('click', async () => {
+        const stream = await getMediaStream();
+        preview.srcObject = stream;
+        recordedChunks = [];
+        
+        mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+
+        mediaRecorder.ondataavailable = function(event) {
+            if (event.data.size > 0) {
+                recordedChunks.push(event.data);
+            }
+        };
+
+        mediaRecorder.onstop = function() {
+            clearInterval(timerInterval);
+            recordingTime = 0;
+            timerDiv.hidden = true;
+
+            const recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
+            recordedVideo.src = URL.createObjectURL(recordedBlob);
+            recordedVideo.style.display = 'block';
+
+            // Convert video blob to base64 for sending
+            const reader = new FileReader();
+            reader.readAsDataURL(recordedBlob);
+            reader.onloadend = function() {
+                const base64Video = reader.result; // Base64 video data
+                uploadBtn.disabled = false;
+
+                // Upload button click
+                uploadBtn.addEventListener('click', () => {
+                    // Send video via AJAX
+                    fetch("{% url 'video_verification' %}", {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': '{{ csrf_token }}',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ video: base64Video }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Redirect to client home on successful upload
+                            window.location.href = "{% url 'submit_kyc' %}";
+                        } else {
+                            messageDiv.innerHTML = '<div class="alert alert-danger">' + data.error + '</div>';
+                        }
+                    })
+                    .catch(error => {
+                        messageDiv.innerHTML = '<div class="alert alert-danger">Error: ' + error + '</div>';
+                    });
+                });
+            };
+        };
+
+        mediaRecorder.start();
+        startBtn.disabled = true;
+        stopBtn.disabled = false;
+        timerDiv.hidden = false;
+        recordingTime = 0;
+        timerInterval = setInterval(() => {
+            recordingTime++;
+            timerDiv.innerText = new Date(recordingTime * 1000).toISOString().substr(11, 8);
+        }, 1000);
+    });
+
+    // Stop recording
+    stopBtn.addEventListener('click', () => {
+        mediaRecorder.stop();
+        preview.srcObject.getTracks().forEach(track => track.stop()); // Stop camera
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+    });
+</script>
+
+</body>
+</html>
+{% endblock %}

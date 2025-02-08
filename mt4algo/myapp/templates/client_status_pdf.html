@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Status PDF</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        h2 {
+            background-color: #007BFF;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            margin: 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px auto;
+            max-width: 1200px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        thead {
+            background-color: #343A40;
+            color: white;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #dee2e6;
+        }
+        th {
+            background-color: #6C757D;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #e9ecef;
+        }
+        .status-on {
+            color: #28A745;
+        }
+        .status-off {
+            color: #DC3545;
+        }
+        /* Specific widths for Email and Phone Number columns */
+        td:nth-child(5),
+        th:nth-child(5) {
+            width: 25%;
+            max-width: 250px; /* You can adjust this value */
+        }
+        td:nth-child(6),
+        th:nth-child(6) {
+            width: 20%;
+            max-width: 200px; /* You can adjust this value */
+        }
+    </style>
+</head>
+<body>
+    <h2>Client Status Report</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>User ID</th>
+                <th>Name</th>
+                <th>Time</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+                <th>Client Plan</th>
+                <th>Panel Status</th>
+                <th>Broker Status</th>
+                <th>IP Address</th>
+                <th>Updated By</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for client in client_all %}
+            <tr>
+                <td>{{ client.id }}</td>
+                <td>{{ client.clint_id }}</td>
+                <td>{{ client.name }}</td>
+                <td>{{ client.time }}</td>
+                <td>{{ client.clint_email }}</td>
+                <td>{{ client.clint_phone_number }}</td>
+                <td>{{ client.clint_plane }}</td>
+                <td class="{% if client in panel_on_clients %}status-on{% else %}status-off{% endif %}">
+                    {% if client in panel_on_clients %}
+                        Panel On {{ client.panel_last_login }}
+                    {% else %}
+                        Panel Off {{ client.panel_last_login }}
+                    {% endif %}
+                </td>
+                <td class="{% if client in broker_on_clients %}status-on{% else %}status-off{% endif %}">
+                    {% if client in broker_on_clients %}
+                        Broker On {{ client.login_date_time }}
+                    {% else %}
+                        Broker Off {{ client.login_date_time }}
+                    {% endif %}
+                </td>
+                <td>{{ client.ip_address }}</td>
+                <td>{{ client.updated_by }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{% if error %}
+  <p class="text-danger">{{ error }}</p>
+{% else %}
+  <p><strong>Name:</strong> {{ client_user.name_first }} {{ client_user.name_last }}</p>
+  <p><strong>Email:</strong> {{ client_user.email }}</p>
+  <p><strong>Phone:</strong> {{ client_user.phone_number }}</p>
+  <p><strong>MT5 Login:</strong> {{ client_user.mt5_login }}</p>
+  <p><strong>MT5 Server:</strong> {{ client_user.mt5_server }}</p>
+  
+  <h5 class="mt-3">MT5 Account Information:</h5>
+  <p><strong>Balance:</strong> {{ account_info.Balance }}</p>
+  <p><strong>Equity:</strong> {{ account_info.Equity }}</p>
+  <p><strong>Margin:</strong> {{ account_info.Margin }}</p>
+  <p><strong>Free Margin:</strong> {{ account_info.MarginFree }}</p>
+  <p><strong>Leverage:</strong> {{ account_info.Leverage }}</p>
+  <p><strong>Profit:</strong> {{ account_info.Profit }}</p>
+{% endif %}

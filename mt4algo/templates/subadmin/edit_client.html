@@ -1,0 +1,207 @@
+{% extends "subadmin/subadmin_base.html" %}
+
+{% block title %}Edit Client Sub-admin{% endblock title %}
+
+{% block main %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Client</title>
+    <style>
+        /* General Styles */
+        *,
+        *:before,
+        *:after {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+.content {
+    margin-left: 250px;
+    padding: 20px;
+    width: -webkit-fill-available;
+    transition: margin-left 0.3s ease;
+}
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Golden Animated Shapes */
+        .background {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .background::before,
+        .background::after {
+            content: "";
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,215,0,0.4), transparent);
+            animation: float 10s ease-in-out infinite;
+        }
+
+        .background::before {
+            top: -150px;
+            left: -150px;
+            animation-delay: 0s;
+        }
+
+        .background::after {
+            bottom: -150px;
+            right: -150px;
+            animation-delay: 5s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(20px, -20px) rotate(180deg); }
+            100% { transform: translate(0, 0) rotate(360deg); }
+        }
+
+        h2 {
+            text-align: center;
+            color: #FFD700;
+            margin-bottom: 20px;
+            font-size: 28px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        form {
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: 40px 30px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(0,0,0,0.5);
+            width: 100%;
+            animation: slideIn 1s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #FFD700;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        input[type="text"], input[type="email"], input[type="tel"] {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border: 1px solid #FFD700;
+            border-radius: 6px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            font-size: 16px;
+            transition: border 0.3s ease, background-color 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus {
+            border-color: #FFA500;
+            background-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 8px #FFD700;
+        }
+
+        button[type="submit"] {
+            background-color: #FFD700;
+            color: #121212;
+            padding: 14px 0;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            width: 100%;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #FFA500;
+            transform: translateY(-3px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            form {
+                padding: 30px 20px;
+            }
+
+            h2 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background"></div>
+    <div>
+        <h2>Edit Client</h2>
+<form method="POST">
+    {% csrf_token %}
+    <div class="mb-3">
+        {{ form.name_first.label_tag }}
+        {{ form.name_first }}
+    </div>
+    <div class="mb-3">
+        {{ form.name_last.label_tag }}
+        {{ form.name_last }}
+    </div>
+    <div class="mb-3">
+        {{ form.email.label_tag }}
+        {{ form.email }}
+    </div>
+    <div class="mb-3">
+        {{ form.phone_number.label_tag }}
+        {{ form.phone_number }}
+    </div>
+    <button type="submit" class="btn btn-primary">Update</button>
+</form>
+    </div>
+</body>
+</html>
+
+{% endblock main %}

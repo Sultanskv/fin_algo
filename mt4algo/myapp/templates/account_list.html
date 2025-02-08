@@ -1,0 +1,48 @@
+{% extends 'client_base.html' %}
+
+{% block main %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MT4/MT5 Accounts</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>MT4/MT5 Accounts</h1>
+    <a href="{% url 'account_add' %}">Add New Account</a>
+    <table>
+        <thead>
+            <tr>
+                <th>Login</th>
+                <th>Server</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for account in accounts %}
+            <tr>
+                <td>{{ account.login }}</td>
+                <td>{{ account.server }}</td>
+                <td>
+                    <a href="{% url 'account_delete' account.id %}">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
+{% endblock %}

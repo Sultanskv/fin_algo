@@ -1,0 +1,32 @@
+{% extends 'admin_base.html' %}
+
+{% block main %}
+<div class="container">
+    <h1>Trade Status for {{ client.name_first }} {{ client.name_last }}</h1>
+
+    {% if error %}
+        <p>{{ error }}</p>
+    {% else %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Symbol</th>
+                    <th>Quantity</th>
+                    <th>Status Message</th>
+                    <th>Timestamp</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for status in trade_statuses %}
+                <tr>
+                    <td>{{ status.symbol }}</td>
+                    <td>{{ status.quantity }}</td>
+                    <td>{{ status.status_message }}</td>
+                    <td>{{ status.timestamp }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+</div>
+{% endblock %}

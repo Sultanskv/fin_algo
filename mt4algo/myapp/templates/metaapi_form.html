@@ -1,0 +1,186 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configure Trading Account</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            display: none; /* Hide content initially */
+            margin: 50px auto;
+            text-align: center;
+        }
+
+        .iframe-container {
+            position: relative;
+            width: 100%;
+            height: 700px;
+            overflow: hidden;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        iframe {
+            position: absolute;
+            top: -200px;
+            left: 0;
+            width: 100%;
+            height: 1000px;
+            border: none;
+        }
+
+        /* 3D Loader */
+        .loader-wrapper {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .loader {
+            display: flex;
+            gap: 10px;
+        }
+
+        .loader div {
+            width: 20px;
+            height: 20px;
+            background-color: red;
+            border-radius: 50%;
+            animation: rotateLoader 1.5s infinite ease-in-out;
+        }
+
+        .loader div:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .loader div:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .loader div:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        .loader div:nth-child(4) {
+            animation-delay: 0.6s;
+        }
+
+        @keyframes rotateLoader {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.5);
+            }
+        }
+
+        /* Smooth fade-in for content */
+        .fade-in {
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Error container styles */
+        .error-container {
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        .error-icon {
+            width: 150px;
+            margin: 0 auto;
+            animation: shake 1.5s infinite;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+        }
+
+        .error-message {
+            font-size: 1.5rem;
+            margin-top: 20px;
+            color: red;
+        }
+
+        .support-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            color: white;
+            background-color: red;
+            border: 1px solid red;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .support-link:hover {
+            background-color: darkred;
+            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.8);
+        }
+        
+    </style>
+</head>
+<body>
+
+    <!-- Loader -->
+    <div class="loader-wrapper">
+        <div class="loader">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container fade-in">
+
+        {% if metaapi_link %}
+        <div class="iframe-container">
+            <iframe src="{{ metaapi_link }}" id="metaapi-iframe"></iframe>
+        </div>
+        {% else %}
+        <div class="error-container">
+            <img src="{% static 'lost.gif' %}" alt="Connection Lost" class="error-icon">
+            <p class="error-message">Your API is not set up. Please contact our Support Team.</p>
+            <a href="{% url 'client_help_center' %}" class="support-link">Contact Support</a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- JavaScript for Loader -->
+    <script>
+        window.onload = function () {
+            setTimeout(() => {
+                document.querySelector(".loader-wrapper").style.display = "none";
+                document.querySelector(".container").style.display = "block";
+            }, 3000); // 3 seconds delay
+        };
+    </script>
+
+
+</body>
+</html>

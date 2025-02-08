@@ -1,0 +1,17 @@
+
+{% extends "subadmin/subadmin_base.html" %}
+
+{% block title %}Sub-Admin Payment Add{% endblock title %}
+
+{% block main %}
+
+        <div class="container mt-5">
+            <h1 class="mb-4">Payment {{ action }}</h1>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-success">{{ action }} Payment</button>
+            </form>
+        </div>
+ 
+{% endblock %}

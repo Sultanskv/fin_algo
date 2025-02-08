@@ -1,0 +1,131 @@
+{% extends 'admin_base.html' %}
+
+{% block main %}
+<style>
+    /* Copy and paste the above CSS code here */
+    /* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #121212; /* Dark background for the page */
+    color: #D4AF37; /* Gold text color */
+    margin: 0;
+    padding: 0;
+}
+
+h2 {
+    text-align: center;
+    color: #D4AF37; /* Gold color for headings */
+    font-size: 2.5em;
+    margin: 20px 0;
+}
+
+table {
+    width: 80%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background-color: #1a1a1a; /* Slightly lighter dark background for table */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #444444; /* Subtle border for table rows */
+}
+
+th {
+    background-color: #333333; /* Dark background for headers */
+    color: #D4AF37; /* Gold color for table headers */
+}
+
+td {
+    color: #E0E0E0; /* Light grey color for table data */
+}
+
+tr:nth-child(even) {
+    background-color: #2a2a2a; /* Dark alternate row color */
+}
+
+tr:hover {
+    background-color: #333333; /* Slightly lighter row color on hover */
+}
+
+a {
+    color: #D4AF37; /* Gold color for links */
+    text-decoration: none;
+    margin-right: 10px;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #D4AF37; /* Gold color for the button */
+    color: #121212; /* Dark text for the button */
+    text-align: center;
+    border-radius: 5px;
+    font-size: 1.1em;
+    text-decoration: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #C29F2B; /* Slightly darker gold on hover */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    table {
+        width: 100%;
+        font-size: 0.9em;
+    }
+    
+    h2 {
+        font-size: 2em;
+    }
+
+    .btn {
+        padding: 8px 16px;
+    }
+}
+
+</style>
+  
+<h2>Sub-admin List</h2>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Phone Number</th>
+            <th>Actions</th>
+            <th>Dashboard</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for subadmin in subadmins %}
+        <tr>
+            <td>{{ subadmin.subadmin_id }}</td>
+            <td>{{ subadmin.subadmin_name_first }}</td>
+            <td>{{ subadmin.subadmin_name_last }}</td>
+            <td>{{ subadmin.subadmin_email }}</td>
+            <td>{{ subadmin.subadmin_phone_number }}</td>
+            <td>
+                <a href="{% url 'subadmin_update' subadmin.id %}">Edit</a>
+                <a href="{% url 'subadmin_delete' subadmin.id %}">Delete</a>
+            </td>
+            <td class="actions"><a href="{% url 'subadmin_view' subadmin.subadmin_id %}">Dashboard</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{% url 'subadmin_create' %}" class="btn btn-primary">Add New Sub-admin</a>
+{% endblock %}

@@ -1,0 +1,178 @@
+{% extends 'admin_base.html' %}
+
+{% block main %}
+<style>
+    .table-container {
+        max-height: 400px;
+        overflow-x: auto;
+        overflow-y: auto;
+        margin-top: 20px;
+    }
+    .table-container::-webkit-scrollbar {
+        width: 12px;
+    }
+    .table-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+    .table-container::-webkit-scrollbar-thumb {
+        background: #888;
+    }
+    .table-container::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+</style>
+
+<div class="form-row">
+    <!-- Search form -->
+    <form method="get" action="{% url 'client_status_admin' %}">
+        <div class="row mb-3">
+            <!-- Search input -->
+            <div class="col-md-4">
+                <input type="text" name="search" value="{{ search_query }}" placeholder="Search clients..." class="form-control" />
+            </div>
+            <!-- Start date input -->
+            <div class="col-md-3">
+                <input type="date" name="start_date" value="{{ start_date }}" class="form-control" />
+            </div>
+            
+            <!-- End date input -->
+            <div class="col-md-3">
+                <input type="date" name="end_date" value="{{ end_date }}" class="form-control" />
+            </div>
+            <!-- Search button -->
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary">Search</button>
+                <span> <!-- Reset button -->
+                    <a href="{% url 'client_status_admin' %}" class="btn btn-secondary ml-2">Reset</a><span>
+            </div>
+            
+        </div>
+    </form>
+</div>
+
+<div class="content">
+    <div class="row">
+        <div class="col-sm md lg xl xxl-12">
+            <div class="card">
+                <div class="card-header row">
+                    <div class="col-md-10">
+                        <h4 class="card-title">Admin Client Status</h4>
+                    </div>
+                    <div class="col-md-2 text-right">
+                        <!-- Form for exporting to PDF -->
+                        <form method="get" action="{% url 'client_status_admin' %}" style="display: inline;">
+                            <input type="hidden" name="export_pdf" value="true" />
+                            <button type="submit" class="btn btn-success">Export to PDF</button>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <div class="table-responsive table-container">
+                        <table class="table tablesorter table-bordered" id="example">
+                            <thead class="text-primary bg-secondary">
+                                <tr>
+                                    <th>Id</th>
+                                    <th>User ID</th>
+                                    <th>Name</th>
+                                    <th>Time</th>
+                                    <th>Email</th>
+                                    <th>Phone Number</th>
+                                    <td>Quantity</td>
+                                    <th>Client Plan</th>
+                                    <th>Panel Status</th>
+                                    <th>Broker Status</th>
+                                    <th>IP Address</th>
+                                    <th>Updated By</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for client in page_obj %}
+                                <tr>
+                                    <td>{{ client.id }}</td>
+                                    <td>{{ client.clint_id }}</td>
+                                    <td>{{ client.name }}</td>
+                                    <td>{{ client.time }}</td>
+                                    <td>{{ client.clint_email }}</td>
+                                    <td>{{ client.clint_phone_number }}</td>
+                                    <td>{{ client.quantity }}</td>
+                                    
+                                    <td>{{ client.clint_plane }}</td>   
+                                    {% comment %} <td>
+                                        {% if client in panel_on_clients %}
+                                            <span style="color: green;">Panel On {{ client.panel_last_login }}</span>
+                                        {% else %}
+                                            <span style="color: red;">Panel Off {{ client.panel_last_login }}</span>
+                                        {% endif %}
+                                    </td> {% endcomment %}
+                                    <td style="color: {% if client.client_status == 'Algo on' %} green {% else %} red {% endif %};">
+                                        {% if client.client_status == 'Algo on' %}
+                                            Panel On
+                                        {% else %}    
+                                            Panel Off
+                                        {% endif %}    
+                                    </td>
+                                    <td style="color: {% if client.trading == 'Live' %} green {% else %} red {% endif %};">
+                                        {% if client.trading == 'Live' %}
+                                            Broker On
+                                        {% elif client.trading == 'Off' %}
+                                            Broker Off
+                                        {% else %}
+                                            Unknown Status
+                                        {% endif %}
+                                    </td>      
+                                    {% comment %} <td style="color: {% if client.trading == 'Live' %} green {% else %} red {% endif %};">
+                                        {% if client.trading == 'Live' %} Broker On {% else %} Broker Off {% endif %}
+                                    </td> {% endcomment %}
+
+                                    <td>{{ client.ip_address }}</td>
+                                    <td>{{ client.updated_by }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Pagination -->
+<div class="pagination">
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1" aria-label="First">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                        <span aria-hidden="true">&lsaquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+
+            <li class="page-item disabled">
+                <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            </li>
+
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                        <span aria-hidden="true">&rsaquo;</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+
+{% endblock %}

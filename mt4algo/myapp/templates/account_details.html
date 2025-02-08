@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MetaApi Account Details</title>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            fetchAccountDetails();
+        });
+
+        async function fetchAccountDetails() {
+            try {
+                let response = await fetch("/fetch-metaapi-account/");
+                let data = await response.json();
+
+                if (data.error) {
+                    document.getElementById("account-info").innerHTML = `<p style="color: red;">${data.error}</p>`;
+                } else {
+                    const account = data.account;
+                    document.getElementById("account-info").innerHTML = `
+                        <p><strong>Platform:</strong> ${account.platform}</p>
+                        <p><strong>Broker:</strong> ${account.broker}</p>
+                        <p><strong>Currency:</strong> ${account.currency}</p>
+                        <p><strong>Balance:</strong> ${account.balance}</p>
+                        <p><strong>Equity:</strong> ${account.equity}</p>
+                        <p><strong>Leverage:</strong> ${account.leverage}</p>
+                        <p><strong>Trade Allowed:</strong> ${account.tradeAllowed}</p>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById("account-info").innerHTML = `<p style="color: red;">Error fetching data</p>`;
+                console.error("Error fetching account details:", error);
+            }
+        }
+    </script>
+</head>
+<body>
+    <h2>MetaApi Account Details</h2>
+    <div id="account-info">Loading...</div>
+</body>
+</html>

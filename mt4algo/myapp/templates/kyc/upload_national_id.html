@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload National ID Proof</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* General body styling */
+        body {
+            background: linear-gradient(135deg, #1e1e1e, #000000);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Poppins', sans-serif;
+            color: #d4af37;
+        }
+
+        /* Card design */
+        .card {
+            background-color: #000;
+            border: 2px solid #d4af37;
+            box-shadow: 0 0 20px rgba(245, 222, 74, 0.5);
+            border-radius: 15px;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .card-header {
+            background-color: #d4af37;
+            color: #000;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.5rem;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+
+        .card-body {
+            background-color: #000;
+            color: #d4af37;
+            padding: 2rem;
+        }
+
+        input, select {
+            background-color: #1a1a1a;
+            color: #d4af37;
+            border: 1px solid #d4af37;
+            border-radius: 8px;
+            padding: 10px;
+            width: 100%;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: #d4af37;
+            box-shadow: 0 0 10px #d4af37;
+            outline: none;
+        }
+
+        .form-label {
+            color: #d4af37;
+            font-weight: 600;
+        }
+
+        .btn-success {
+            background-color: #d4af37;
+            color: #000;
+            border: none;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn-success:hover {
+            background-color: #000;
+            color: #d4af37;
+            border: 1px solid #d4af37;
+        }
+
+        .alert {
+            background-color: #1a1a1a;
+            border: 1px solid #d4af37;
+            color: #d4af37;
+        }
+
+        .alert .btn-close {
+            color: #d4af37;
+        }
+
+        /* Power button styling */
+        .power-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: red;
+            border: 2px solid #d4af37;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .power-button i {
+            color: #000;
+            font-size: 30px;
+        }
+
+        .power-button:hover {
+            transform: scale(1.1);
+            background-color: #d4af37;
+        }
+
+        @media (max-width: 576px) {
+            .card {
+                width: 90%;
+            }
+
+            .btn-success {
+                font-size: 1rem;
+                padding: 10px;
+            }
+
+            .form-label {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Card Container -->
+    <div class="container mt-5 d-flex justify-content-center align-items-center">
+        <div class="card shadow-lg border-0">
+            <div class="card-header">
+                Step 1: Upload National ID Proof
+            </div>
+
+            <!-- Display error or success messages -->
+            <div class="p-3">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="card-body">
+                <p class="form-label">
+                    Please upload a clear copy of your national ID proof for verification. Ensure that the document is 
+                    valid and shows your photo, name, and other necessary details clearly.
+                </p>
+
+                <!-- KYC Form -->
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <label for="id_national_id" class="form-label">Upload National ID Proof</label>
+                        <input type="file" id="id_national_id" name="national_id" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="id_national_id_number" class="form-label">National ID Number:</label>
+                        <input type="text" id="id_national_id_number" name="national_id_number" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="id_national_id_name" class="form-label">Name on ID:</label>
+                        <input type="text" id="id_national_id_name" name="national_id_name" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="id_national_id_issue_date" class="form-label">Date of Birth:</label>
+                        <input type="date" id="id_national_id_issue_date" name="national_id_issue_date" required>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-success btn-lg w-50">Next</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+</html>

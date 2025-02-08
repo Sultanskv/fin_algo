@@ -1,0 +1,27 @@
+<!-- fetch_trades.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fetch and Save Trades</title>
+</head>
+<body>
+    <h1>Fetch &amp; Save Trades</h1>
+    <button id="fetchTradesButton">Fetch &amp; Save Trades</button>
+    <div id="fetchTradesResult"></div>
+
+    <script>
+        document.getElementById('fetchTradesButton').addEventListener('click', function() {
+            fetch('/fetch-save-trades/')
+                .then(response => response.json())
+                .then(data => {
+                    const resultDiv = document.getElementById('fetchTradesResult');
+                    resultDiv.innerText = data.message || data.error;
+                })
+                .catch(error => {
+                    document.getElementById('fetchTradesResult').innerText = 'Error: ' + error;
+                });
+        });
+    </script>
+</body>
+</html>

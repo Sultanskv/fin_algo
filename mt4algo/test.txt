@@ -1,0 +1,635 @@
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'ittechnology1may2023@gmail.com'  # Your email address
+EMAIL_HOST_PASSWORD = 'uyfg cflv fhhz nmhq'      # Your email password or app-specific password
+
+
+
+===================================================================================================
+
+path('next-step/', views.upload_national_id, name='upload_national_id'),  # First step: National ID upload
+    path('kyc/agreement/', views.agreement_view, name='agreement'),  # Step 2: Agreement
+
+    path('kyc/video-verification/', views.video_verification_view, name='video_verification'),  # Third step: Video verification
+    path('kyc/submit/', views.submit_kyc, name='submit_kyc'),  # Final step: Submit KYC
+    path('brokers/', views.broker_selection_view, name='broker_selection'),  # URL for broker selection
+
+
+]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+# For development only. In production, use a web server like Nginx to serve media files.
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# Only serve static files when DEBUG is True
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) 
+
+============================================================================================
+
+
+
+
+
+# ==============================================================kyc=================================================
+
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import ClientDetail
+from django.utils import timezone
+import uuid
+def signup_view(request):
+    if request.method == 'POST':
+        name_first = request.POST['name_first']
+        name_last = request.POST['name_last']
+        phone_number = request.POST['number']
+        email = request.POST['email']
+        password = request.POST['password']
+        country = request.POST['country']
+        city = request.POST['city']
+        code = ''.join([str(random.randint(0, 9)) for _ in range(6)])
+
+        # Check if email already exists
+        if ClientDetail.objects.filter(email=email).exists():
+            messages.error(request, 'Email is already registered.')
+            return redirect('signup')
+
+        else:
+            # Create a new client
+            client_detail = ClientDetail(
+                user_id=uuid.uuid4().hex[:8], 
+                name_first=name_first, 
+                name_last=name_last, 
+                email=email, 
+                password=password, 
+                phone_number=phone_number, 
+                country=country, 
+                city=city,
+                date_joined=timezone.now(),
+                last_login=timezone.now(),
+                verify_code=code 
+            )
+            
+            # messages.success(request, 'Account created successfully.')
+            # Redirect to the broker selection page
+        #    return redirect('kyc_video_upload')  # Make sure 'broker_selection' is the correct URL name
+            subject = 'Hello send verify code!'
+            message = f'Verification code is .{code}'
+            email_from = settings.EMAIL_HOST_USER
+            client_email = [email]  # Add recipient email addresses here
+          
+            try:
+                send_mail(subject, message, email_from, client_email)
+                client_detail.save()
+                request.session['client_email'] = client_detail.email
+                return redirect('verify')
+            
+            except Exception as e:
+                messages.error(request, 'Otp send faild')
+                    # You can log the error e here if needed
+                return redirect('signup')
+
+    return render(request, 'signup.html')
+    
+
+def register_verify(request):
+    # return render(request,'register_verify.html',)
+    email = request.session.get('client_email')
+    print(f' otp = {email}')
+    try:
+        user = ClientDetail.objects.get(email=email)
+        if request.method == 'POST':     
+            code = request.POST.get('code')
+            print(code)
+            if user.verify_code == code:
+             #   return HttpResponse('otp verfiy ')
+                return redirect('upload_national_id')
+            else:
+                return render(request,'register_verify.html',{'msg':'The verification code in incorrect.'})
+        #return redirect('/cpanel/?msg=Your email address is already registered')
+        
+    except ObjectDoesNotExist:
+        print('error')
+        return render(request,'register_verify.html',{'msg':'user not in'})
+      #  return redirect('/verify/')
+    print('run last')
+    return render(request,'register_verify.html',{'msg':f'The verification code in {email}.'})
+    
+
+
+
+from django.utils import timezone
+
+def upload_national_id(request):
+    email = request.session.get('client_email')
+  # Ensure that the email exists, otherwise start from the broker selection
+
+    # Get or create the client
+    client, created = ClientDetail.objects.get_or_create(
+        email=email,
+        defaults={
+            'date_joined': timezone.now(),
+            'last_login': timezone.now(),
+        }
+    )   
+
+    # Get or create the KYC object associated with this client
+    kyc, created = KYC.objects.get_or_create(client=client)
+
+    if request.method == 'POST':
+        form = NationalIDForm(request.POST, request.FILES, instance=kyc)
+        if form.is_valid():
+            form.save()  # Save the uploaded National ID
+            return redirect('agreement')  # Redirect to the next step (Agreement)
+         #   return HttpResponse('save dovoment')
+
+    else:
+        form = NationalIDForm(instance=kyc)
+
+    return render(request, 'kyc/upload_national_id.html', {'form': form})
+
+def agreement_view(request):
+    email = request.session.get('client_email')
+ # Redirect to the first step if the email is missing
+
+    client = ClientDetail.objects.get(email=email)
+    kyc = KYC.objects.get(client=client)
+
+    if request.method == 'POST':
+        form = AgreementForm(request.POST)
+        if form.is_valid():
+            kyc.agreement_signed = form.cleaned_data['agreement_signed']
+            kyc.terms_accepted = form.cleaned_data['terms_accepted']
+            kyc.save()
+            return redirect('video_verification')  # Redirect to the video verification step
+
+    else:
+        form = AgreementForm()
+
+    return render(request, 'kyc/agreement.html', {'form': form})
+
+
+
+# import base64
+# import json
+# from django.core.files.base import ContentFile
+# from django.shortcuts import render, redirect
+# from django.http import JsonResponse, HttpResponse
+# from django.contrib import messages
+
+
+# def video_verification_view(request):
+#     email = request.session.get('client_email')
+#     text = 'I confirm that this is a KYC submission.'
+#     if request.method == 'POST':
+#         try:
+#             client = ClientDetail.objects.get(email=email)
+
+#             data = json.loads(request.body)
+#             video_base64 = data.get('video')
+
+#             if video_base64:
+#                     # Decode the base64 video
+#                 format, video_str = video_base64.split(';base64,')
+#                 ext = format.split('/')[-1]
+#                 video_data = ContentFile(base64.b64decode(video_str), name=f'{client.name_first}kyc_video{client.user_id}.{ext}')
+                    
+#                     # Save video to the database
+#                 print(client.user_id)    
+#                 try:    
+#                     kyc_obj = KYC.objects.get(client__user_id=client.user_id)
+
+#                     print(kyc_obj)
+#                     # If the object already exists, update the fields
+#                     kyc_obj.video_file = video_data
+#                     kyc_obj.video_verification_done = True
+#                     kyc_obj.save()
+
+#                  #   return redirect('client_home')
+#                     return JsonResponse({'success': True})
+#                 except:
+#                     return JsonResponse({'success': False, 'error': 'Video data not save.'})
+#             else:
+#                 return JsonResponse({'success': False, 'error': 'Video data not found.'})
+#         except Exception as e:
+#             return JsonResponse({'success': False, 'error': str(e)})
+
+#         # Render the KYC form when the request method is GET
+#     else:
+#         return render(request, 'kyc/video_verification.html',{'text':text})  # Make sure to pass the correct template for the form
+
+############################################################################################################################
+############################################################################################################################
+############################################################################################################################
+
+
+import base64
+import json
+from django.core.files.base import ContentFile
+from django.shortcuts import render, redirect
+from django.http import JsonResponse, HttpResponse
+from django.contrib import messages
+
+
+def video_verification_view(request):
+    email = request.session.get('client_email')
+    text = 'I confirm that this is a KYC submission.'
+    if request.method == 'POST':
+        try:
+            client = ClientDetail.objects.get(email=email)
+
+            data = json.loads(request.body)
+            video_base64 = data.get('video')
+
+            if video_base64:
+                    # Decode the base64 video
+                format, video_str = video_base64.split(';base64,')
+                ext = format.split('/')[-1]
+                video_data = ContentFile(base64.b64decode(video_str), name=f'{client.name_first}kyc_video{client.user_id}.{ext}')
+                    
+                    # Save video to the database
+                print(client.user_id)    
+                try:    
+                    kyc_obj = KYC.objects.get(client__user_id=client.user_id)
+
+                    print(kyc_obj)
+                    # If the object already exists, update the fields
+                    kyc_obj.video_file = video_data
+                    kyc_obj.video_verification_done = True
+                    kyc_obj.save()
+                    kyc_id = kyc_obj.id  # Access the 'id' field
+                    print(f'KYC ID: {kyc_id}')
+                    if verify_kyc(text, kyc_id):
+                 #   return redirect('client_home')
+                        return JsonResponse({'success': True})
+                    else: 
+                        return JsonResponse({'success': False, 'error': 'Video not mathch.'})
+
+                except:
+                    return JsonResponse({'success': False, 'error': 'Video data not save.'})
+            else:
+                return JsonResponse({'success': False, 'error': 'Video data not found.'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+
+        # Render the KYC form when the request method is GET
+    else:
+        return render(request, 'kyc/video_verification.html',{'text':text})  # Make sure to pass the correct template for the form
+    
+
+
+import os
+import moviepy.editor as mp
+import speech_recognition as sr
+from difflib import SequenceMatcher
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+from .models import KYC  # Import the KYC model
+
+def video_to_text(video_file):
+    """Extracts audio from the video file and converts it to text."""
+    # Check if the video file is provided
+    print(f'video_file = {video_file}')
+    if video_file:
+        # Path to the video file
+        video_path = video_file.path
+        print(f'video_path = {video_path}')
+        try:
+            # Extract audio from video using moviepy
+            video = mp.VideoFileClip(video_path)
+            audio_path = video_path.replace(".mp4", ".wav")  # Save audio as a WAV file
+            video.audio.write_audiofile(audio_path)
+
+            # Convert audio to text using speech recognition
+            recognizer = sr.Recognizer()
+            print(f'recognizer = {recognizer}')
+            with sr.AudioFile(audio_path) as source:
+                audio = recognizer.record(source)
+                print(f'audio ={audio}')
+                try:
+                    text = recognizer.recognize_google(audio)
+                    return text
+                except sr.UnknownValueError:
+                    return "Could not understand the audio."
+                except sr.RequestError:
+                    return "Error with the speech recognition service."
+
+        finally:  # This block will always run after try
+            # Clean up the extracted audio file
+            if os.path.exists(audio_path):
+                os.remove(audio_path)
+
+    return "No video file provided."
+
+
+def compare_text(extracted_text, reference_text):
+    """Compares the extracted text with the reference text and returns True if similarity is above 75%."""
+    similarity_ratio = SequenceMatcher(None, extracted_text, reference_text).ratio()
+
+    # Check if similarity is above 75%
+    if similarity_ratio >= 0.75:
+        return True
+    return False
+
+def verify_kyc(text, kyc_id):
+    """View to handle KYC verification by comparing video text with a reference text."""
+    # Get the KYC instance
+    print(f'text, kyc_id = {text, kyc_id}')
+    kyc_instance = get_object_or_404(KYC, id=kyc_id)
+
+    # Reference text for comparison (this can be dynamic)
+    reference_text = text #"This is the reference text that should be matched with the video."
+
+    # Perform video-to-text conversion
+    extracted_text = video_to_text(kyc_instance.video_file)
+    print(f'extracted_text = {extracted_text}')
+    # Compare extracted text with reference text
+    if compare_text(extracted_text, reference_text):
+        # Mark the KYC as verified
+        print('true true')
+        kyc_instance.video_verification_done = True
+        kyc_instance.save()
+        return True
+     #   return HttpResponse("Verification successful, video text matched.")
+    else:
+    #    return HttpResponse("Verification failed, text did not match.")
+        return False
+
+############################################################################################################################
+############################################################################################################################
+############################################################################################################################
+
+def submit_kyc(request):
+    email = request.session.get('client_email')
+
+ # Redirect to the first step if the email is missing
+
+    client = ClientDetail.objects.get(email=email)
+    kyc = KYC.objects.get(client=client)
+
+    if kyc.agreement_signed and kyc.terms_accepted and kyc.video_verification_done:
+        # KYC process completed, show a confirmation or send an email if required
+        client.user_active = True
+        client.save()
+        subject = 'Hello send verify Completed!'
+        message = f'Verification Completed'
+        email_from = settings.EMAIL_HOST_USER
+        client_email = [email]  # Add recipient email addresses here
+        send_mail(subject, message, email_from, client_email)
+        return render(request, 'kyc/kyc_completed.html')
+
+    return redirect('video_verification')  # Redirect back to the start if KYC not completed
+
+
+def broker_selection_view(request):
+    # Handle window close detection and session management for 'Next Step' button
+    if 'window_closed' not in request.GET:
+        request.session['show_next_step'] = False  # Ensure 'Next Step' button is hidden on initial load
+
+    # Check if the window has been closed based on the query parameter
+    if request.GET.get('window_closed') == 'true':
+        request.session['show_next_step'] = True
+
+    show_next_step = request.session.get('show_next_step', False)
+
+    # Handle the broker selection process
+    if request.method == 'POST':
+        selected_broker = request.POST.get('broker')
+        client_email = request.POST.get('email')
+        # Save the selected broker and email to the session
+        request.session['client_email'] = client_email
+        client, created = ClientDetail.objects.get_or_create(
+            email=client_email,
+            defaults={'broker': selected_broker}
+        )
+        if not created:
+            client.broker = selected_broker
+            client.save()
+
+        # Redirect to KYC step 1 (National ID Upload)
+        return redirect('submit_kyc')
+
+    return render(request, 'broker_selection.html', {'show_next_step': show_next_step})
+
+
+
+
+==============================================================================================================================================
+Here are the steps to add Google Sign-Up functionality:
+
+1. Install the Required Libraries
+First, install the required packages for social authentication:
+
+
+
+pip install social-auth-app-django
+
+
+-----------------------------------------------------------------------------------------------------------
+2. Update settings.py
+Add the necessary configurations for social-auth-app-django and Google OAuth2.
+
+
+# Add 'social_django' to your INSTALLED_APPS
+INSTALLED_APPS = [
+    # Other apps
+    'social_django',
+]
+
+# Authentication backends
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend',  # Keep the default backend
+)
+
+# Google OAuth2 Credentials
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = 'YOUR_GOOGLE_CLIENT_ID'  # From Google Developer Console
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'YOUR_GOOGLE_CLIENT_SECRET'  # From Google Developer Console
+
+# Social Auth URL Redirects
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+# Middleware to handle sessions and authentication
+MIDDLEWARE = [
+    # Other middleware
+    'social_django.middleware.SocialAuthExceptionMiddleware',
+]
+
+# Social auth context processors for templates
+TEMPLATES = [
+    {
+        'OPTIONS': {
+            'context_processors': [
+                # Other context processors
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
+            ],
+        },
+    },
+]
+
+# Optional: Storing extra data from Google
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
+    'https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/userinfo.profile',
+]
+
+# Option to auto-create users who sign in through Google
+SOCIAL_AUTH_GOOGLE_OAUTH2_WHITELISTED_DOMAINS = ['gmail.com']
+
+
+
+====================================================================================================================================
+3. Add URLs in urls.py
+In your urls.py, include the paths for social-auth-app-django:
+
+
+
+from django.urls import path, include
+
+urlpatterns = [
+    # Other URLs
+    path('auth/', include('social_django.urls', namespace='social')),
+]
+
+==================================================================================================================================
+4. Set Up Google OAuth Credentials
+Go to the Google Developer Console.
+Create a new project and navigate to APIs & Services → Credentials.
+Click Create Credentials → OAuth 2.0 Client IDs.
+Configure the consent screen and add the redirect URI:
+
+
+http://localhost:8000/auth/complete/google/
+---------------------------------------------------------------------------------------------------------------------------------
+or if you're using production, use your domain:
+
+https://yourdomain.com/auth/complete/google/
+
+===================================================================================================================================
+Get the Client ID and Client Secret.
+5. Update the Social Media Buttons in HTML
+Update the Google button in your HTML to trigger the OAuth flow:
+
+
+
+<div class="social-buttons">
+    <a href="{% url 'social:begin' 'google-oauth2' %}">
+        <img src="{% static 'icons8-google-48.png' %}" alt="Google">
+    </a>
+    <!-- Other social media links remain unchanged -->
+</div>
+
+
+
+Now, when a user clicks the Google sign-up button, they will be redirected to Google's OAuth consent screen,
+and upon successful authentication, they'll be logged into your Django app.
+=================================================================================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

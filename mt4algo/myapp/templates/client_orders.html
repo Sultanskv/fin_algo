@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Client Orders and Positions</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+      body { background-color: #121212; color: #e0e0e0; }
+      .table-container { margin-top: 30px; padding: 20px; background: #1e1e1e; border-radius: 8px; box-shadow: 0 4px 8px rgba(255,215,0,0.2); }
+      .nav-pills .nav-link { background: #333; color: #e0e0e0; }
+      .nav-pills .nav-link.active { background: #ffd700; color: #121212; }
+      .table { background: #232323; color: #e0e0e0; }
+      .table-dark th, .table-dark td { border-color: #444; }
+      #loading-overlay {
+          position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+          background: rgba(0, 0, 0, 0.85); color: #ffd700;
+          display: flex; align-items: center; justify-content: center;
+          font-size: 2em; z-index: 9999;
+      }
+      @keyframes blink {
+          0% { opacity: 1; }
+          50% { opacity: 0; }
+          100% { opacity: 1; }
+      }
+      .blinking {
+          animation: blink 1s infinite;
+      }
+  </style>
+</head>
+<body>
+  <div id="loading-overlay" class="blinking">Please wait, don't refresh...</div>
+  <div class="container" style="display:none;" id="main-content">
+      <div class="table-container">
+          <h2 class="text-center">Client Orders and Positions</h2>
+          <ul class="nav nav-pills justify-content-center mb-3" id="myTab" role="tablist">
+              <li class="nav-item" role="presentation">
+                  <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#open-orders" type="button" role="tab">Open Orders</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#history-orders" type="button" role="tab">Historical Orders</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#open-positions" type="button" role="tab">Open Positions</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#history-positions" type="button" role="tab">Historical Positions</button>
+              </li>
+          </ul>
+          <div class="tab-content" id="myTabContent">
+              <div class="tab-pane fade show active" id="open-orders" role="tabpanel"></div>
+              
+              <div class="tab-pane fade" id="history-orders" role="tabpanel">
+                  <!-- Filter Input Field -->
+                  <div class="mb-3">
+                      <input type="text" id="historyOrdersFilter" class="form-control" placeholder="Filter by symbol..." onkeyup="filterHistoryOrders()">
+                  </div>
+                  <div id="history-orders-table-container"></div>
+              </div>
+              
+              <div class="tab-pane fade" id="open-positions" role="tabpanel"></div>
+              <div class="tab-pane fade" id="history-positions" role="tabpanel"></div>
+          </div>
+      </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    fetch('/api/client_data/')
+      .then(response => response.json())
+      .then(data => {
+          populateTables(data);
+          document.getElementById('loading-overlay').style.display = 'none';
+          document.getElementById('main-content').style.display = 'block';
+      })
+      .catch(error => {
+          console.error('Error fetching data:', error);
+          document.getElementById('loading-overlay').innerText = "Error loading data. Please try again.";
+      });
+
+    function populateTables(data) {
+        // Open Orders
+        let openOrdersDiv = document.getElementById('open-orders');
+        if (data.open_orders.length > 0) {
+            let table = createTable([
+                "Order ID", "Symbol", "Type", "Volume", "Price", "State", "Time"
+            ], data.open_orders, (order) => [
+                order.id, order.symbol, order.type, order.volume, order.openPrice || "-", order.state,
+                order.time ? new Date(order.time).toLocaleString() : "-"
+            ]);
+            openOrdersDiv.appendChild(table);
+        } else {
+            openOrdersDiv.innerHTML = "<p class='text-center text-muted'>No open orders available.</p>";
+        }
+
+        // Historical Orders
+        let historyOrdersDiv = document.getElementById('history-orders-table-container');
+        if (data.history_orders.length > 0) {
+            let table = createTable([
+                "Order ID", "Symbol", "Type", "Volume", "Entry Time", "Exit Time", "Entry Price", "Exit Price", "P&L", "State"
+            ], data.history_orders, (order) => [
+                order.id,
+                order.symbol,
+                order.type,
+                order.volume,
+                order.entryTime !== "-" ? new Date(order.entryTime).toLocaleString() : "-",
+                order.exitTime !== "-" ? new Date(order.exitTime).toLocaleString() : "-",
+                order.entryPrice,
+                order.exitPrice,
+                order.profit,
+                order.state
+            ]);
+            table.id = "historyOrdersTable";  // तालिका को एक ID देते हैं
+            historyOrdersDiv.appendChild(table);
+        } else {
+            historyOrdersDiv.innerHTML = "<p class='text-center text-muted'>No historical orders available.</p>";
+        }
+
+        // Open Positions
+        let openPositionsDiv = document.getElementById('open-positions');
+        if (data.open_positions.length > 0) {
+            let table = createTable([
+                "Position ID", "Symbol", "Volume", "Unrealized P&L", "Entry Price", "Current Price", "Time"
+            ], data.open_positions, (position) => [
+                position.id,
+                position.symbol,
+                position.volume,
+                position.unrealizedProfit,
+                position.openPrice,
+                position.currentPrice,
+                position.time ? new Date(position.time).toLocaleString() : "-"
+            ]);
+            openPositionsDiv.appendChild(table);
+        } else {
+            openPositionsDiv.innerHTML = "<p class='text-center text-muted'>No open positions available.</p>";
+        }
+
+        // Historical Positions (placeholder)
+        let historyPositionsDiv = document.getElementById('history-positions');
+        if (data.history_orders.length > 0) {
+            let table = createTable([
+                "Order ID", "Symbol", "Type", "Volume", "Entry Price", "Exit Price", "P&L", "State", "Entry Time", "Exit Time"
+            ], data.history_orders, (order) => [
+                order.id,
+                order.symbol,
+                order.type,
+                order.volume,
+                order.entryPrice,
+                order.exitPrice,
+                order.profit,
+                order.state,
+                order.entryTime !== "-" ? new Date(order.entryTime).toLocaleString() : "-",
+                order.exitTime !== "-" ? new Date(order.exitTime).toLocaleString() : "-"
+            ]);
+            historyPositionsDiv.appendChild(table);
+        } else {
+            historyPositionsDiv.innerHTML = "<p class='text-center text-muted'>No historical positions available.</p>";
+        }
+    }
+
+    function createTable(headers, data, rowMapper) {
+        let table = document.createElement('table');
+        table.className = 'table table-bordered table-striped';
+        let thead = document.createElement('thead');
+        thead.className = 'table-dark';
+        let headerRow = document.createElement('tr');
+        headers.forEach(header => {
+            let th = document.createElement('th');
+            th.innerText = header;
+            headerRow.appendChild(th);
+        });
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+
+        let tbody = document.createElement('tbody');
+        data.forEach(item => {
+            let row = document.createElement('tr');
+            rowMapper(item).forEach(cellData => {
+                let td = document.createElement('td');
+                td.innerText = cellData;
+                row.appendChild(td);
+            });
+            tbody.appendChild(row);
+        });
+        table.appendChild(tbody);
+        return table;
+    }
+
+    function filterHistoryOrders() {
+        let input = document.getElementById("historyOrdersFilter").value.toUpperCase();
+        let table = document.getElementById("historyOrdersTable");
+        if (!table) return;
+        let tr = table.getElementsByTagName("tr");
+
+        // हेडर को छोड़कर सभी पंक्तियों पर जाएं
+        for (let i = 1; i < tr.length; i++) { 
+            let td = tr[i].getElementsByTagName("td")[1];  // "Symbol" कॉलम इंडेक्स 1 पर ध्यान दें
+            if (td) {
+                let txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(input) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            } 
+        }
+    }
+  </script>
+</body>
+</html>

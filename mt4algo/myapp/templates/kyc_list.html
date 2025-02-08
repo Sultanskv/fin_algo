@@ -1,0 +1,87 @@
+{% extends 'admin_base.html' %}
+
+{% block main %}
+<h1>KYC Records</h1>
+  
+<!-- Search Form -->
+<form method="GET" action="{% url 'kyc_list' %}" class="mb-4">
+    <div class="row">
+        <div class="col-md-3">
+            <label for="from_date">From Date</label>
+            <input type="date" id="from_date" name="from_date" class="form-control" value="{{ from_date }}">
+        </div>
+        <div class="col-md-3">
+            <label for="to_date">To Date</label>
+            <input type="date" id="to_date" name="to_date" class="form-control" value="{{ to_date }}">
+        </div>
+        <div class="col-md-4">
+            <label for="search_query">Search by ID Number or Name</label>
+            <input type="text" id="search_query" name="search_query" class="form-control" value="{{ search_query }}" placeholder="Search...">
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary mr-2">Search</button>
+            <a href="{% url 'download_pdf_kyc' %}?from_date={{ from_date }}&to_date={{ to_date }}&search_query={{ search_query }}" 
+               class="btn btn-success">Download PDF</a>
+        </div>
+    </div>
+</form>
+
+<!-- KYC Records Table -->
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Client</th>
+            <th>National ID</th>
+            <th>National ID Number</th>
+            <th>National ID Name</th>
+            <th>National ID Issue Date</th>
+            <th>Terms Accepted PDF</th>
+            <th>Agreement Signed</th>
+            <th>Terms Accepted</th>
+            <th>Reference Text</th>
+            <th>Video File</th>
+            <th>KYC Completed</th>
+            <th>Video Verification Done</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for kyc in kyc_records %}
+        <tr>
+            <td>{{ kyc.id }}</td>
+            <td>{{ kyc.client.name_first }} {{ kyc.client.name_last }}</td>
+            <td>
+                {% if kyc.national_id %}
+                    <a href="{{ kyc.national_id.url }}" download>Download</a>
+                {% else %}
+                    No File
+                {% endif %}
+            </td>
+            <td>{{ kyc.national_id_number }}</td>
+            <td>{{ kyc.national_id_name }}</td>
+            <td>{{ kyc.national_id_issue_date }}</td>
+            <td>
+                {% if kyc.agreement_file %}
+                    <a href="{{ kyc.agreement_file.url }}" download>Download Agreement PDF</a>
+                {% else %}
+                    No Agreement File
+                {% endif %}
+            </td>
+            
+            <td>{{ kyc.agreement_signed }}</td>
+            <td>{{ kyc.terms_accepted }}</td>
+            <td>{{ kyc.reference_text }}</td>
+            <td>
+                {% if kyc.video_file %}
+                    <a href="{{ kyc.video_file.url }}" download>Download</a>
+                {% else %}
+                    No File
+                {% endif %}
+            </td>
+            <td>{{ kyc.kyc_completed }}</td>
+            <td>{{ kyc.video_verification_done }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Broker Connect</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+        /* Dark theme styling with animations */
+        body {
+            background: linear-gradient(145deg, #1e1e2f, #121212);
+            color: #ffffff;
+            font-family: 'Arial', sans-serif;
+            overflow-x: hidden;
+        }
+        .card {
+            background-color: #2b2b3d;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.5);
+            transform: scale(1);
+            transition: all 0.3s ease-in-out;
+        }
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.7);
+        }
+        .card-header {
+            background-color: #1f1f33;
+            border-bottom: 1px solid #444;
+            border-radius: 15px 15px 0 0;
+            text-align: center;
+        }
+        .card-header img {
+            width: 100px;
+            margin-bottom: 10px;
+            animation: fadeIn 1s ease-out;
+        }
+        .card-header h4 {
+            font-weight: bold;
+            color: #4caf50;
+            margin: 0;
+            animation: fadeIn 1s ease-out;
+        }
+        .btn-success {
+            background-color: #4caf50;
+            border: none;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .btn-success:hover {
+            background-color: #388e3c;
+            transform: translateY(-3px);
+        }
+        .btn-success:active {
+            transform: scale(0.95);
+        }
+        .form-control {
+            background-color: #1f1f33;
+            color: #ffffff;
+            border: 1px solid #555;
+            border-radius: 5px;
+            transition: border-color 0.3s ease;
+        }
+        .form-control:focus {
+            background-color: #2b2b3d;
+            color: #ffffff;
+            border-color: #4caf50;
+            box-shadow: 0 0 5px #4caf50;
+        }
+        .alert-info {
+            background-color: #212133;
+            color: #4caf50;
+            border-color: #4caf50;
+            border-radius: 10px;
+        }
+        .alert-info p {
+            margin: 0;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 10px #4caf50;
+            }
+            50% {
+                box-shadow: 0 0 20px #4caf50;
+            }
+        }
+        @media (min-width: 992px) {
+            .container {
+                max-width: 960px;
+                margin-top: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header text-center">
+                    <img src="https://fxscouts.com/wp-content/uploads/sites/20/2024/10/metatrader5-sign-1-1.png" alt="Meta Trader Logo">
+                    <h4>Meta Trader Connect</h4>
+                </div>
+                <div class="card-body">
+                    {% if messages %}
+                        <div class="alert alert-info">
+                            {% for message in messages %}
+                                <p>{{ message }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <form method="POST" action="" id="brokerConnectForm">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="mt5_login">MT5 Login</label>
+                            <input type="text" class="form-control" id="mt5_login" name="mt5_login"
+                                   placeholder="Enter MT5 Login" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="mt5_password">MT5 Password</label>
+                            <input type="password" class="form-control" id="mt5_password" name="mt5_password"
+                                   placeholder="Enter MT5 Password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="broker">Select Broker</label>
+                            <select class="form-control" id="broker" name="broker" required>
+                                <option value="">-- Select a Broker --</option>
+                                {% for broker in brokers %}
+                                    <option value="{{ broker.id }}" data-broker="{{ broker.broker }}">{{ broker.broker }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="mt5_server">MT5 Server</label>
+                            <select class="form-control" id="mt5_server" name="mt5_server" required>
+                                <option value="">-- Select an MT5 Server --</option>
+                            </select>
+                        </div>
+                        <button type="button" class="btn btn-success btn-block" id="connectButton">Connect</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const serverLists = {{ server_lists|safe }};
+
+    document.getElementById('broker').addEventListener('change', function () {
+        const brokerName = this.options[this.selectedIndex].getAttribute('data-broker');
+        const serverSelect = document.getElementById('mt5_server');
+        serverSelect.innerHTML = '<option value="">-- Select an MT5 Server --</option>';
+
+        if (serverLists[brokerName]) {
+            serverLists[brokerName].forEach(server => {
+                const option = document.createElement('option');
+                option.value = server;
+                option.textContent = server;
+                serverSelect.appendChild(option);
+            });
+        }
+    });
+
+    document.getElementById('connectButton').addEventListener('click', function () {
+        const button = this;
+        button.disabled = true;
+        button.textContent = 'Connecting...';
+        button.style.backgroundColor = '#4caf50';
+        button.style.animation = 'pulse 1s infinite';
+
+        setTimeout(() => {
+            button.textContent = 'Connected Successfully!';
+            button.style.backgroundColor = '#388e3c';
+            button.style.animation = 'none';
+
+            // Redirect to the dashboard after a delay
+            setTimeout(() => {
+                document.getElementById('brokerConnectForm').submit();
+            }, 1000);
+        }, 1500);
+    });
+</script>
+
+</body>
+</html>

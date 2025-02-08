@@ -1,0 +1,29 @@
+{% extends 'admin_base.html' %}
+
+{% block main %}
+<div class="container">
+    <h1>MT5 Operation Logs</h1>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>Operation Type</th>
+                <th>Client Login</th>
+                <th>Symbol</th>
+                <th>Message</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}
+            <tr>
+                <td>{{ log.timestamp }}</td>
+                <td>{{ log.operation_type }}</td>
+                <td>{{ log.client_login }}</td>
+                <td>{{ log.symbol }}</td>
+                <td>{{ log.message }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

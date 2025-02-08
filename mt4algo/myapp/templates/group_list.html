@@ -1,0 +1,62 @@
+{% extends 'admin_base.html' %}
+
+{% block main %}
+<div class="content">
+    <div class="row">
+        <div class="col-sm md lg xl xxl-12">
+            <div class="card">
+                <div class="card-header row">
+                    <div class="col">
+                        <h4 class="card-title">Group List</h4>
+                    </div>
+                    <div class="col text-right">
+                        <a href="{% url 'create_group' %}" class="btn btn-primary">Create New Group</a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive table-container">
+                        <table class="table tablesorter table-bordered" id="example">
+                            <thead class="text-primary bg-secondary">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>User</th>
+                                    <th>Group</th>
+                                    <th>Symbols</th>
+                                    <th>Min Quantity</th>
+                                    <th>Max Quantity</th>
+                                    <th>Created At</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for group in groups %}
+                                <tr>
+                                    <td>{{ group.id }}</td>
+                                    <td>{{ group.user }}</td>
+                                    <td>{{ group.GROUP }}</td>
+                                    <td>
+                                        {% for symbol in group.symbols.all %}
+                                            {{ symbol }}{% if not forloop.last %}, {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                    <td>{{ group.min_quantity }}</td>
+                                    <td>{{ group.max_quantity }}</td>
+                                    <td>{{ group.created_at }}</td>
+                                    <td>
+                                        <a href="{% url 'update_group' group.id %}" class="btn btn-primary">Update</a>
+                                        <form action="{% url 'delete_group' group.id %}" method="post" style="display:inline;">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

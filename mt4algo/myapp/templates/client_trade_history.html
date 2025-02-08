@@ -1,0 +1,74 @@
+{% extends 'client_base.html' %}
+{% load static %}
+{% block main %}
+<style>
+    body {
+        background-image: url('{% static "finowayslogo.png" %}'); /* Path to your watermark image */
+        background-position: center; /* Center the image */
+        background-repeat: no-repeat; /* Do not repeat the image */
+        background-size: 500px 500px; /* Adjust the size of the watermark */
+        opacity: 0.8; /* Light opacity so the content remains visible */
+        background-attachment: fixed; /* Keeps the watermark in place when scrolling */
+    }
+</style>
+
+<div class="container mt-4">
+    <h1 class="text-center mb-4">Your Trade History</h1>
+    
+    <form method="GET" action="{% url 'client_trade_history' %}" class="form-inline mb-4 justify-content-end">
+        <div class="form-group mx-sm-2 mb-2">
+            <label for="start_date" class="mr-2">Start Date:</label>
+            <input type="date" id="start_date" name="start_date" class="form-control form-control-sm" value="{{ start_date }}">
+        </div>
+        <div class="form-group mx-sm-2 mb-2">
+            <label for="end_date" class="mr-2">End Date:</label>
+            <input type="date" id="end_date" name="end_date" class="form-control form-control-sm" value="{{ end_date }}">
+        </div>
+        <button type="submit" class="btn btn-primary btn-sm mb-2 mx-1">Filter</button>
+        <button type="submit" name="clear" value="clear" class="btn btn-secondary btn-sm mb-2">Clear</button>
+    </form>
+
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>ID</th>
+                <th>ENTRY TIME</th>
+                <th>SYMBOL</th>
+                <th>TYPE</th>
+                <th>QUANTITY</th>
+                <th>ENTRY PRICE</th>
+                <th>EXIT TIME</th>
+                <th>EXIT PRICE</th>
+                <th>P & L</th>
+                <th>Cumulative P & L</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for trade in trades %}
+            <tr>
+                <td>{{ trade.id }}</td>
+                <td>{{ trade.signal_time }}</td>
+                <td>{{ trade.symbol }}</td>
+                <td>{{ trade.trade_type }}</td>
+                <td>{{ trade.quantity }}</td>
+                <td>{{ trade.entry_price }}</td>
+                <td>{{ trade.exit_time }}</td>
+                <td>{{ trade.exit_price }}</td>
+                <td style="color: {% if trade.p_l >= 0 %}green{% else %}red{% endif %}; font-weight: bold;">
+                    {{ trade.p_l|floatformat:2 }} $
+                </td>
+                <td style="color: {% if trade.cumulative_p_l >= 0 %}green{% else %}red{% endif %}; font-weight: bold;">
+                    {{ trade.cumulative_p_l|floatformat:2 }} $
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3 class="text-right mt-4">Total cumulative P&L: 
+        <span style="color: {% if total_cumulative_p_l >= 0 %}green{% else %}red{% endif %}; font-weight: bold;">
+            {{ total_cumulative_p_l|floatformat:2 }}$
+        </span>
+    </h3>
+</div>
+{% endblock %}

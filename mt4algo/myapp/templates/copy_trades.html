@@ -1,0 +1,16 @@
+<html>
+  <head>
+    <title>Copy Trades</title>
+  </head>
+  <body>
+    <h1>Copy Trades</h1>
+    <form method="post">
+      {% csrf_token %}
+      Instrument: <input type="text" name="instrument">
+      Entry Price: <input type="text" name="entry_price">
+      Exit Price: <input type="text" name="exit_price">
+      Quantity: <input type="text" name="quantity">
+      <button type="submit">Copy Trades</button>
+    </form>
+  </body>
+</html>

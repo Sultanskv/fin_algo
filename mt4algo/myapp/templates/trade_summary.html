@@ -1,0 +1,116 @@
+{% extends 'admin_base.html' %}
+
+{% block main %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trade Summary</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000; /* Black background */
+            color: #fff; /* White text */
+            margin: 0;
+            padding: 0;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #f0c14b; /* Golden color */
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        p {
+            text-align: center;
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+
+        a {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px 20px;
+            background-color: #f0c14b; /* Golden button */
+            color: #000; /* Black text */
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        a:hover {
+            background-color: #d4a217; /* Darker golden on hover */
+            transform: scale(1.1);
+        }
+
+        .summary-section {
+            border: 2px solid #f0c14b; /* Golden border */
+            padding: 20px;
+            margin: 20px auto;
+            width: 80%;
+            border-radius: 10px;
+            background-color: #121212; /* Darker black background */
+            animation: slideIn 1.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Trade Summary</h1>
+
+    <!-- Execution Trades Section -->
+    <div class="summary-section">
+        <h2>Execution Trades</h2>
+        <p>Total Successful Trades: {{ execution_success_count }}</p>
+        <p>Total Failed Trades: {{ execution_fail_count }}</p>
+        <p>
+            {% if execution_success_count > 0 %}
+            <a href="{% url 'trade_log_details' %}?success=1&log_type=execution">View Successful Trades</a>
+            {% endif %}
+            {% if execution_fail_count > 0 %}
+            <a href="{% url 'trade_log_details' %}?success=0&log_type=execution">View Failed Trades</a>
+            {% endif %}
+            <a href="{% url 'trade_log_details' %}?log_type=execution">View All Trades</a>
+        </p>
+    </div>
+
+    <!-- Close Trades Section -->
+    <div class="summary-section">
+        <h2>Close Trades</h2>
+        <p>Total Successful Close Trades: {{ close_success_count }}</p>
+        <p>Total Failed Close Trades: {{ close_fail_count }}</p>
+        <p>
+            {% if close_success_count > 0 %}
+            <a href="{% url 'trade_log_details' %}?success=1&log_type=close">View Successful Close Trades</a>
+            {% endif %}
+            {% if close_fail_count > 0 %}
+            <a href="{% url 'trade_log_details' %}?success=0&log_type=close">View Failed Close Trades</a>
+            {% endif %}
+            <a href="{% url 'trade_log_details' %}?log_type=close">View All Close Trades</a>
+        </p>
+    </div>
+</body>
+</html>
+
+{% endblock %}

@@ -1,0 +1,273 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+  /* Base styles */
+  .jumbotron {
+    text-align: center;
+    margin: 75px auto;
+    box-shadow: 0 0 20px rgba(245, 222, 74, 0.5); /* Golden shadow effect */
+    border-radius: 15px;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    width: 40%;
+    background-color: #000;
+    color: #ffd700; /* Golden color */
+    padding: 30px;
+  }
+
+  .jumbotron:hover {
+    box-shadow: 0 0 20px rgba(245, 222, 74, 0.5);
+    transform: scale(1.05);
+  }
+
+  .jumbotron img {
+    max-width: 200px; /* Increased max width */
+    margin-bottom: 20px;
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-control {
+    border-radius: 20px;
+    background-color: #222;
+    border: 1px solid #ffd700;
+    color: #ffd700;
+  }
+
+  .form-control::placeholder {
+    color: #ffd700;
+  }
+
+  .form-control:focus {
+    background-color: #020202;
+    border-color: #ffcc00;
+    color: #ffd700;
+  }
+
+  .btn-primary {
+    background-color: #ffd700;
+    border: none;
+    color: #000;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+
+  .btn-primary:hover {
+    background-color: #ffcc00;
+    transform: scale(1.05);
+  }
+
+  .form-text {
+    color: #ffd700;
+  }
+
+  .alert {
+    background-color: #000;
+    border: 1px solid #ffd700;
+    color: #ffd700;
+  }
+
+  .error-message {
+    color: #ff0000;
+  }
+
+  .h1, h1 {
+    font-size: 1.5rem;
+  }
+
+  .h3, h3 {
+    font-size: 1rem;
+  }
+
+  /* Responsive styles */
+  @media (max-width: 768px) {
+    .jumbotron {
+      width: 80%;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .jumbotron {
+      width: 90%;
+    }
+  }
+
+  a {
+    color: #ffd700;
+  }
+
+  a:hover {
+    color: #ffcc00;
+  }
+
+  /* Chatbot specific styles */
+  #chatBot {
+    position: fixed;
+    bottom: 100px;
+    right: 20px;
+    width: 300px;
+    height: 400px;
+    border: 2px solid #ffd700;
+    border-radius: 10px;
+    display: none;
+    background-color: #000;
+    color: #ffd700;
+    box-shadow: 0 0 20px rgba(245, 222, 74, 0.5);
+    z-index: 1000;
+  }
+
+  #chatBotHeader {
+    background-color: #ffd700;
+    color: #000;
+    padding: 10px;
+    cursor: pointer;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  #chatBotBody {
+    padding: 10px;
+    overflow-y: scroll;
+    height: 340px;
+  }
+
+  #chatInput {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-top: 1px solid #ffd700;
+    background-color: #222;
+    color: #ffd700;
+  }
+
+  /* New Chat Now button styles */
+  #chatButton {
+    position: fixed;
+    bottom: 20px;
+    right: 50px;
+    background-color: #000;
+    color: #ffd700;
+    border: 2px solid #ffd700;
+    border-radius: 50px;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 20px rgba(245, 222, 74, 0.5);
+    z-index: 1001;
+  }
+
+  #chatButton:hover {
+    background-color: #ffd700;
+    color: #000;
+    transform: scale(1.1);
+  }
+
+  #chatButton img {
+    height: 24px;
+    width: 24px;
+    margin-right: 10px;
+  }
+</style>
+
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-danger">{{ message }}</div>
+{% endfor %}
+{% endif %}
+
+<div class="jumbotron">
+    <img src="{% static 'finowayslogo.png' %}" alt="Logo">
+    <h1 class="display-6">Login As Client!</h1>
+    {% if msg %}
+    <p style='color: red;'>{{ msg }}</p>
+    {% endif %}
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="user_id">Email ID</label>
+          <input type="email" name="email" class="form-control" placeholder="Enter email id">
+          <small id="emailHelp" class="form-text text-muted"></small>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" name="password" class="form-control" placeholder="Enter password">
+        </div>
+        <button type="submit" class="btn btn-primary" style='width: 100%;'>Login</button>
+        
+    </form>
+
+    <!-- Social media buttons  -->
+    <div class="social-buttons">
+      <a href="{% url 'google_login' %}"><img src="{% static 'icons8-google-48.png' %}" alt="Google"></a>
+      <a href="{% url 'facebook_login' %}?state=login"><img src="{% static 'icons8-facebook-48.png' %}" alt="Facebook"></a>
+      <a href="{% url 'twitter_login' %}?state=login" ><img src="{% static 'icons8-twitter-48.png' %}" alt="Twitter"></a>
+      <img src="{% static 'icons8-instagram-48.png' %}" alt="Instagram">
+  </div>
+
+    <h3><a href="client_forgot_password">Forgot Password</a></h3>
+    
+</div>
+
+{% if error == "no" %}
+<script>
+  alert('Logged In Successfully');
+  // window.location = ('{% url 'Analysis' %}');
+</script>
+{% endif %}
+{% if error == "yes" %}
+<script>
+  alert('Invalid Login Credentials, Try Again...');
+</script>
+{% endif %}
+
+<div id="chatBot">
+  <div id="chatBotHeader">Chat with Finoways Support</div>
+  <div id="chatBotBody">
+    <!-- Messages will be added here -->
+  </div>
+  <input type="text" id="chatInput" placeholder="Type your message..." onkeypress="checkEnter(event)">
+</div>
+
+<button id="chatButton" onclick="toggleChatBot()">
+    <img src="{% static 'images.png' %}" alt="Chat Robot Icon"> <!-- Path to your robot icon image -->
+    Chat Now
+</button>
+
+<script>
+  function toggleChatBot() {
+    var chatBot = document.getElementById('chatBot');
+    chatBot.style.display = chatBot.style.display === 'none' ? 'block' : 'none';
+    if (chatBot.style.display === 'block') {
+      addMessage('Support', 'Hello! Click here to ask your questions or contact us for more information.');
+    }
+  }
+
+  function addMessage(sender, text) {
+    var message = document.createElement('p');
+    message.textContent = sender + ': ' + text;
+    document.getElementById('chatBotBody').appendChild(message);
+  }
+
+  function checkEnter(event) {
+    if (event.keyCode === 13) { // Enter key
+      var input = document.getElementById('chatInput');
+      addMessage('You', input.value);
+      autoReply(input.value);
+      input.value = '';
+    }
+  }
+
+  function autoReply(text) {
+    setTimeout(function() {
+      addMessage('Support', 'Thank you for reaching out. For immediate assistance, please contact us at info@finoways.com or call +971-545619225/+971-527068772.');
+    }, 1000);
+  }
+</script>
+{% endblock %}

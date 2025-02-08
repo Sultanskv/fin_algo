@@ -1,0 +1,139 @@
+{% extends "admin_base.html" %}
+{% block main %}
+<style>
+    /* General Styles */
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color:rgb(2, 14, 22);
+        color: #333;
+        margin: 0;
+        padding: 0;
+    }
+    
+    h2 {
+        text-align: center;
+        font-size: 24px;
+        color:rgb(170, 175, 76);
+        margin-bottom: 20px;
+    }
+    
+    a {
+        text-decoration: none;
+        color: white;
+        background-color: #4caf50;
+        padding: 10px 15px;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+    }
+    
+    a:hover {
+        background-color: #45a049;
+    }
+    
+    /* Table Styles */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px auto;
+        background-color: black;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    thead {
+        background-color:rgba(76, 175, 79, 0.89);
+        color: white;
+    }
+    
+    thead th {
+        text-align: left;
+        padding: 15px;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    tbody tr {
+        border-bottom: 1px solid #ddd;
+        transition: background-color 0.2s;
+    }
+    
+    tbody tr:hover {
+        background-color:rgb(14, 2, 2);
+    }
+    
+    tbody td {
+        padding: 15px;
+        text-align: left;
+        font-size: 14px;
+    }
+    
+    tbody td a {
+        font-size: 12px;
+        padding: 5px 10px;
+        margin-right: 5px;
+    }
+    
+    form button {
+        font-size: 12px;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+        background-color: #f44336;
+        color: white;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    
+    form button:hover {
+        background-color: #d32f2f;
+    }
+    
+    /* Add New Button */
+    a[href*='subadmin_create_limit'] {
+        display: inline-block;
+        margin: 0 auto 20px;
+        font-size: 16px;
+        font-weight: bold;
+        text-align: center;
+    }
+        
+</style>
+<h2>Sub-admin Limit List</h2>
+<a href="{% url 'subadmin_create_limit' %}">Add New Sub-admin</a>
+<table>
+    <thead>
+        <tr>
+            <th>Sub-admin Limit</th>
+            <th>Max Quantity</th>
+            <th>Created At</th>
+            <th>Used Credit</th>
+            <th>Withdraw</th>
+            <th>Expired Limit</th>
+            <th>Active Limit</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for subadmin in subadmins %}
+        <tr>
+            <td>{{ subadmin.subadmin_limit }}</td>
+            <td>{{ subadmin.max_quantity }}</td>
+            <td>{{ subadmin.created_at }}</td>
+            <td>{{ subadmin.used_credit }}</td>
+            <td>{{ subadmin.withdraw }}</td>
+            <td>{{ subadmin.expired_limit }}</td>
+            <td>{{ subadmin.active_limit }}</td>
+            <td>
+                <a href="{% url 'subadmin_update_limit' subadmin.id %}">Edit</a>
+                <form action="{% url 'subadmin_delete_limit' subadmin.id %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" style="background:none; border:none; color:red; cursor:pointer;">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

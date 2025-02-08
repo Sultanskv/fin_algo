@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Franchisee Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+/* General Styles */
+*,
+*:before,
+*:after {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #000000;
+    font-family: 'Poppins', sans-serif;
+    overflow-x: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.title {
+    text-align: center;
+    background: linear-gradient(45deg, #FFD700, #FFA500);
+    color: #ffffff;
+    padding: 10px 0;
+    font-size: 24px;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.form-container {
+    position: relative;
+}
+
+.background {
+    width: 500px;
+    height: 600px;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    top: 50%;
+}
+
+.background .shape {
+    height: 250px;
+    width: 250px;
+    position: absolute;
+    border-radius: 50%;
+    animation: float 6s ease-in-out infinite;
+}
+
+.shape:first-child {
+    background: radial-gradient(circle, #FFD700, #FFA500);
+    left: -100px;
+    top: -100px;
+}
+
+.shape:last-child {
+    background: radial-gradient(circle, #FFA500, #FF8C00);
+    right: -100px;
+    bottom: -100px;
+}
+
+form {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 60px 40px;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 215, 0, 0.3);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 400px;
+    animation: slideIn 1s ease-out;
+}
+
+form h3 {
+    margin-bottom: 30px;
+    color: #FFD700;
+    font-size: 28px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+label {
+    display: block;
+    margin-top: 20px;
+    font-size: 16px;
+    color: #ffffff;
+}
+
+input {
+    width: 100%;
+    padding: 12px 20px;
+    margin-top: 8px;
+    border: 1px solid #FFD700;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    transition: border 0.3s ease;
+}
+
+input:focus {
+    border: 1px solid #FFA500;
+    box-shadow: 0 0 5px #FFD700;
+}
+
+button {
+    margin-top: 40px;
+    width: 100%;
+    padding: 15px;
+    background-color: #FFD700;
+    color: #000000;
+    border: none;
+    border-radius: 30px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+button:hover {
+    background-color: #FFA500;
+    transform: translateY(-3px);
+}
+
+.forgot-password a {
+    color: #FFD700;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.3s ease;
+}
+
+.forgot-password a:hover {
+    color: #FFA500;
+}
+
+@keyframes float {
+    0% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+    50% {
+        transform: translate(20px, -20px) rotate(180deg);
+    }
+    100% {
+        transform: translate(0, 0) rotate(360deg);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .background {
+        display: none;
+    }
+}
+    </style>
+</head>
+<body>
+    <!-- <div class="title">
+        {% for off in offers %}
+            {% if forloop.first or offer.title != previous_offer_title %}
+            <p>{{off.Title}}</p>
+            <p style="font-size: 15px;">{{off.Offer_Title}}</p>
+            {% endif %}
+            {% with offer.title as previous_offer_title %}
+            {% endwith %}
+        {% endfor %}
+    </div>
+    <div class="ticker-wrapper">
+        <div class="ticker">
+            {% for offer in offers %}
+            <p>{{offer.discount}} {{offer.offer_price}} .</p>
+            {% endfor %}
+        </div>
+    </div> -->
+
+
+    <form method="post">
+        {% csrf_token %}
+        <h3>Login Here</h3>
+        <label for="username">Username</label>
+        <input type="text" placeholder="Email or Phone" id="username" name="email" required>
+        <label for="password">Password</label>
+        <input type="password" placeholder="Password" id="password" name="password" required>
+        <button>Log In</button>
+        <div class="forgot-password">
+            <a href="subadmin/forgot-password/">Forgot Password?</a>
+        </div>
+    </form>
+</body>
+</html>
+

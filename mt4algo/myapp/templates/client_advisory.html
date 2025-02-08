@@ -1,0 +1,232 @@
+
+{% extends 'client_base.html' %}
+{% block main %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Advisory Messages</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background: #121212; /* Dark background */
+            color: #e0e0e0; /* Light text color */
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 100%; /* Full width */
+            padding: 30px 15px;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header-section h1 {
+            font-size: 2.5rem;
+            color: #ffd700; /* Accent color */
+        }
+
+        .header-section p {
+            font-size: 1.2rem;
+            color: #bdbdbd;
+        }
+
+        /* Table Styles */
+        .advisory-table {
+            width: 100%; /* Full width */
+            background-color: #1e1e1e; /* Dark table background */
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Table shadow */
+        }
+
+        .advisory-table th, .advisory-table td {
+            padding: 15px;
+            text-align: left;
+            color: #e0e0e0;
+            border-bottom: 1px solid #444;
+        }
+
+        .advisory-table th {
+            background-color: #333; /* Dark header */
+            color: #ffd700; /* Gold header text */
+        }
+
+        .advisory-table tr:hover {
+            background-color: #333; /* Hover effect for rows */
+        }
+
+        .advisory-table .received-time {
+            font-size: 0.9rem;
+            color: #9e9e9e;
+        }
+
+        /* Style for message click */
+        .advisory-table td.clicked {
+            background-color: #333333;
+            color: #e0e0e0;
+            cursor: pointer;
+        }
+
+        /* No messages style */
+        .no-message {
+            text-align: center;
+            padding: 20px;
+            color: #e0e0e0;
+            font-size: 1.2rem;
+            background: #333333; /* Dark background */
+            border: 1px solid #444444;
+            border-radius: 10px;
+        }
+        /* Unread messages blink effect */
+/* Unread message with blink effect */
+/* Blink effect for unread messages */
+.new-message {
+    background-color: #ffd700; /* Highlight color */
+    animation: blink 1s infinite; /* Blink effect */
+    color: #000; /* Text color for unread messages */
+}
+
+/* Blink animation */
+@keyframes blink {
+    0%, 100% {
+        background-color: #ffd700; /* Highlight color */
+    }
+    50% {
+        background-color: #333; /* Dimmed color */
+    }
+}
+
+/* Normal style for read messages */
+.read-message {
+    background-color: #1e1e1e; /* Normal background */
+    color: #e0e0e0; /* Normal text color */
+}
+
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Page Heading -->
+        <div class="header-section">
+            <h1>Welcome, {{ client_user.name_first }} {{ client_user.name_last }}</h1>
+            <p>Your Personalized Advisory Messages</p>
+        </div>
+
+        <!-- Advisory Messages Section -->
+        {% if messages %}
+        <table class="advisory-table">
+            <thead>
+                <tr>
+                    <th>Inbox</th>
+                    <th>Message</th>
+                    <th>Received On</th>
+                    <th>Segment Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tbody>
+                    {% for msg in messages %}
+                    <tr id="message-{{ msg.id }}" class="{% if not msg.read %}new-message{% else %}read-message{% endif %}">
+                        <td>
+                            <i class="fas {% if not msg.read %}fa-envelope{% else %}fa-check-circle{% endif %} me-2"></i>
+                        </td>
+                        <td class="message-text" onclick="markAsRead({{ msg.id }})">{{ msg.message }}</td>
+                        <td class="received-time">{{ msg.created_at }}</td>
+                        <td>{{ msg.advisory_type }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                
+        </table>
+        {% else %}
+        <div class="no-message">
+            <i class="fas fa-info-circle me-2"></i>No new advisory messages at the moment.
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Include Bootstrap JS and FontAwesome for icons -->
+    <script src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/js/all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+function fetchNewMessages() {
+    fetch("{% url 'fetch_new_messages' %}") // Backend URL call
+        .then(response => response.json())
+        .then(data => {
+            if (data.messages) {
+                const tableBody = document.querySelector(".advisory-table tbody"); // Table body element
+                
+                data.messages.forEach(message => {
+                    // Check if message ID already exists in the table
+                    if (!document.getElementById(`message-${message.id}`)) {
+                        const row = document.createElement("tr");
+                        row.id = `message-${message.id}`;
+                        row.classList.add("new-message");
+
+                        row.innerHTML = `
+                            <td><i class="fas fa-envelope me-2"></i></td>
+                            <td class="message-text" onclick="markAsRead(${message.id})">${message.message}</td>
+                            <td class="received-time">${message.created_at}</td>
+                            <td>${message.advisory_type}</td>
+                        `;
+                        tableBody.prepend(row); // Add new message at the top of the table
+                    }
+                });
+            }
+        })
+        .catch(error => console.error("Error fetching messages:", error));
+}
+
+// Call fetchNewMessages every 5 seconds
+setInterval(fetchNewMessages, 5000);
+
+
+function markAsRead(messageId) {
+    // Send a POST request to mark the message as read
+    fetch(`/mark-read/${messageId}/`, {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": "{{ csrf_token }}", // CSRF Token for security
+            "Content-Type": "application/json",
+        },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        if (data.success) {
+            const messageRow = document.getElementById(`message-${messageId}`);
+            if (messageRow) {
+                // Remove the blinking effect
+                messageRow.classList.remove("new-message");
+                // Add normal style
+                messageRow.classList.add("read-message");
+                // Update the icon to indicate read status
+                const icon = messageRow.querySelector(".fas");
+                icon.classList.remove("fa-envelope");
+                icon.classList.add("fa-check-circle");
+            }
+        } else {
+            console.error("Failed to mark message as read:", data.error);
+        }
+    })
+    .catch((error) => console.error("Error marking message as read:", error));
+}
+
+
+
+    </script>
+    
+    
+</body>
+</html>
+
+{% endblock %}

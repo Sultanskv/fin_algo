@@ -1,0 +1,941 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finoways - Advanced Trading Solutions</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <style>
+        :root {
+            --primary: #FFD700; /* Golden */
+            --secondary: #000000; /* Black */
+            --accent: #FFFFFF; /* White */
+            --text: #FFFFFF;
+            --bg-dark: #000000;
+            --bg-card: #1A1A1A;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeIn 1s ease-out;
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fadeIn 2s ease-out;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 215, 0, 0.2); /* Golden hover */
+            color: var(--primary);
+            transform: scale(1.05);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            padding: 8rem 2rem 4rem;
+            background: radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.1), transparent 70%);
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(0,0,0,0.7), rgba(0,0,0,0.3)),
+                        url('https://i.pinimg.com/originals/0f/f7/78/0ff7784184af761d38db3013a4d1584e.gif');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.7;
+            z-index: -1;
+            animation: fadeIn 2s ease-out;
+        }
+
+        .hero-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-text {
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        .hero-text h1 {
+            font-size: 4rem;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, var(--primary), #9d815d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: slideIn 1s ease-out;
+        }
+
+        .hero-text p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+            animation: fadeIn 1.2s ease-out;
+        }
+
+        .trusted-by {
+            margin-top: 3rem;
+            padding: 2rem;
+            background: rgba(255, 215, 0, 0.1); /* Golden background */
+            border-radius: 20px;
+            text-align: center;
+            animation: fadeIn 2s ease-out;
+        }
+
+        .counter {
+            font-size: 3rem;
+            color: var(--primary);
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .register-form {
+            flex: 1;
+            background: rgba(26, 26, 26, 0.385);
+            padding: 3rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: slideIn 1s ease-out;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .register-form h2 {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.3); /* Golden border */
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            transition: border-color 0.3s, background 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary);
+            background: rgba(255, 215, 0, 0.05);
+            outline: none;
+        }
+
+        .register-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: var(--accent);
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 10px rgba(255, 215, 0, 0.3);
+        }
+
+        .register-btn:hover {
+            transform: translateY(-3px);
+            background: linear-gradient(45deg, var(--secondary), var(--primary));
+            box-shadow: 0 6px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        /* About Section */
+        .about {
+            padding: 6rem 2rem;
+            background: var(--bg-card);
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        .about-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .about h2 {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 2rem;
+            animation: slideIn 1s ease-out;
+        }
+
+        .about p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            color: rgba(255, 255, 255, 0.9);
+            animation: fadeIn 1.2s ease-out;
+        }
+
+        .about a {
+            color: var(--primary);
+            text-decoration: underline;
+            transition: color 0.3s ease;
+        }
+
+        .about a:hover {
+            color: var(--accent);
+        }
+
+        /* Subscribe Section */
+        .subscribe {
+            padding: 6rem 2rem;
+            background: var(--bg-card);
+            text-align: center;
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        .subscribe h4 {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            animation: slideIn 1s ease-out;
+        }
+
+        .subscribe p {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+            animation: fadeIn 1.2s ease-out;
+        }
+
+        .subscribe form {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .subscribe input {
+            padding: 1rem;
+            font-size: 1rem;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 8px;
+            min-width: 200px;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            transition: border-color 0.3s, background 0.3s;
+        }
+
+        .subscribe input:focus {
+            border-color: var(--primary);
+            background: rgba(255, 215, 0, 0.05);
+            outline: none;
+        }
+
+        .subscribe button {
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            background: var(--primary);
+            border: none;
+            border-radius: 8px;
+            color: var(--accent);
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+            width: 200px;
+            box-shadow: 0 4px 10px rgba(255, 215, 0, 0.3);
+        }
+
+        .subscribe button:hover {
+            transform: translateY(-3px);
+            background: var(--secondary);
+            box-shadow: 0 6px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        /* Services Section */
+        .services {
+            padding: 6rem 2rem;
+            background: var(--bg-dark);
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        .services-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .services h2 {
+            font-size: 3rem;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 4rem;
+            animation: slideIn 1s ease-out;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-card {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 215, 0, 0.3); /* Golden border */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+        }
+
+        .service-card h3 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .service-card p {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 1.5rem;
+            animation: fadeIn 1.2s ease-out;
+        }
+
+        .service-card a {
+            color: var(--primary);
+            text-decoration: underline;
+            transition: color 0.3s ease;
+        }
+
+        .service-card a:hover {
+            color: var(--accent);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-card);
+            padding: 4rem 2rem 2rem;
+            border-top: 1px solid rgba(255, 215, 0, 0.3); /* Golden border */
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h4 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            animation: slideIn 1s ease-out;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.8rem;
+            animation: fadeIn 1.2s ease-out;
+        }
+
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--primary);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .register-form {
+                margin-top: 2rem;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                gap: 1rem;
+                background: rgba(0, 0, 0, 0.95);
+                position: absolute;
+                top: 100%;
+                right: 0;
+                width: 200px;
+                display: none;
+                border-radius: 0 0 8px 8px;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .menu-toggle {
+                display: block;
+                cursor: pointer;
+                color: var(--text);
+                font-size: 1.5rem;
+            }
+        }
+
+    /* Trading Info Section */
+    .trading-info {
+        padding: 6rem 2rem;
+        background: linear-gradient(45deg, #0A0A0A, #151515);
+        color: var(--text);
+    }
+
+    .trading-info-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .trading-info-content h2 {
+        font-size: 2.5rem;
+        color: var(--primary);
+        margin-bottom: 1rem;
+    }
+
+    .trading-info-content p {
+        font-size: 1.2rem;
+        color: rgba(255, 255, 255, 0.8);
+        margin-bottom: 3rem;
+    }
+
+    .trading-row {
+        display: flex;
+        align-items: center;
+        /* gap: 2rem; */
+        margin-bottom: 4rem;
+    }
+
+    .trading-row.reverse {
+        flex-direction: row-reverse;
+    }
+
+    .trading-image {
+        flex: 1;
+        text-align: center;
+    }
+
+    .trading-image img {
+        width: 100%;
+        max-width: 500px;
+        border-radius: 15px;
+        box-shadow: 0 8px 15px rgba(255, 215, 0, 0.3);
+        animation: float 3s ease-in-out infinite;
+    }
+
+    .trading-text {
+        flex: 1;
+        text-align: left;
+    }
+
+    .trading-text h3 {
+        font-size: 1.8rem;
+        color: var(--primary);
+        margin-bottom: 1rem;
+    }
+
+    .trading-text p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 991px) {
+        .trading-row {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .trading-row.reverse {
+            flex-direction: column;
+        }
+
+        .trading-text {
+            text-align: center;
+        }
+
+        .trading-text p {
+            padding: 0 1rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .trading-info-content h2 {
+            font-size: 2rem;
+        }
+
+        .trading-info-content p {
+            font-size: 1rem;
+        }
+
+        .trading-text h3 {
+            font-size: 1.5rem;
+        }
+
+        .trading-text p {
+            font-size: 1rem;
+        }
+    }
+
+
+    .testimonials {
+        padding: 6rem 2rem;
+        background: var(--bg-card);
+        color: var(--text);
+        text-align: center;
+    }
+
+    .testimonials-content h2 {
+        font-size: 2.5rem;
+        color: var(--primary);
+        margin-bottom: 1rem;
+    }
+
+    .testimonials-content p {
+        font-size: 1.2rem;
+        color: rgba(255, 255, 255, 0.8);
+        margin-bottom: 3rem;
+    }
+
+    .testimonials-carousel {
+        display: flex;
+        gap: 2rem;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .testimonial-item {
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.5);
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .testimonial-item:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+    }
+
+    .testimonial-item iframe {
+        width: 100%;
+        height: 200px;
+        border: none;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+    }
+
+    .testimonial-item h3 {
+        font-size: 1.5rem;
+        color: var(--primary);
+        margin-bottom: 0.5rem;
+    }
+
+    .testimonial-item p {
+        font-size: 1rem;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .testimonials-carousel {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .testimonial-item iframe {
+            height: 150px;
+        }
+    }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-content">
+            <div class="logo">Finoways</div>
+            <div class="nav-links" id="navLinks">
+                <a href="#home">Home</a>
+                <a href="#about">About Us</a>
+                <a href="#services">Services</a>
+                <a href="#subscribe">Subscribe</a>
+                <a href="#contact">Contact</a>
+            </div>
+            <div class="menu-toggle" id="menuToggle">&#9776;</div>
+        </div>
+    </nav>
+
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>New-gen of Digital Currency Trading</h1>
+                <p>Finoways LLC offers investment opportunities in various global markets including FOREX, COMEX, and CRYPTO to help clients achieve financial freedom.</p>
+            </div>
+            <div class="register-form">
+                <h2>Start Your 2 Days Free Trail</h2>
+                <form method="POST" action="{% url 'register' %}" onsubmit="handleSubmit(event)">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input type="email" name="email" placeholder="Enter your email" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" name="password" placeholder="Create password" required>
+                    </div>
+                    <button type="submit" class="register-btn">Begin Your Journey →</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <div class="trusted-by">
+        <div class="counter" id="counter">80,000+</div>
+        <p>Trusted Companies Worldwide</p>
+    </div>
+    
+    <section id="about" class="about">
+        <div class="about-content">
+            <h2>About Finoways</h2>
+            <p>At Finoways LLC, we are dedicated to helping individuals and businesses achieve their financial goals. Our team of experienced financial consultants have a wealth of knowledge and expertise in various financial areas such as investment management, Forex, Crypto, and Comex.</p>
+            <p>We understand that every client is unique and therefore we take the time to understand your specific financial situation and tailor our services to meet your individual needs. Our goal is to provide you with a comprehensive financial plan that will help you reach your short-term and long-term financial objectives.</p>
+            <a href="#">Read More</a>
+        </div>
+    </section>
+
+    <section id="services" class="services">
+        <div class="services-content">
+            <h2>Our All Services</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <h3>Route</h3>
+                    <p>A Entry level service that offers high-quality Forex signals with a focus on risk management and profitability. With The Route, you can enjoy the benefits of expert trading advice, including 1:1 risk and reward ratio, daily 1 or 2 calls, and a target of 100 to 120 PIPS.</p>
+                    <a href="#">Read More</a>
+                </div>
+                <div class="service-card">
+                    <h3>Detour</h3>
+                    <p>The ultimate combo service for Forex, Comex, and Crypto trading. With Detour, you can enjoy expert trading advice for all three markets, providing you with the tools you need to succeed in the fast-paced world of trading. Our team of experienced traders has a proven track record of success.</p>
+                    <a href="#">Read More</a>
+                </div>
+                <div class="service-card">
+                    <h3>Destination</h3>
+                    <p>Your ultimate trading destination for Forex, Comex, or Crypto trading. With Destination, you can enjoy expert trading advice in your preferred segment, providing you with the tools you need to succeed in the fast-paced world of trading. Our team of experienced traders has a proven track record.</p>
+                    <a href="#">Read More</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<!-- Add this section to your HTML -->
+<section id="trading-info" class="trading-info">
+    <div class="trading-info-content">
+        <h2>Explore the World of Trading</h2>
+        <p>Learn about the most prominent markets and gain insights into Comex and Forex trading.</p>
+
+        <!-- Comex Trading -->
+        <div class="trading-row">
+            <div class="trading-image">
+                <img src="https://finoways.com/assets/images/all-img/v5/index_image1.jpg" alt="Comex Icon">
+            </div>
+            <div class="trading-text">
+                <h3>What is Comex Trading?</h3>
+                <p>The Comex market, a division of the New York Mercantile Exchange (NYMEX), deals with the trading of metals futures and options contracts. It specializes in commodities like gold, silver, copper, and platinum. Comex provides a global platform for investors, speculators, and hedgers to trade based on their price movements. It's vital for setting global benchmark prices for precious metals.</p>
+            </div>
+        </div>
+
+        <!-- Forex Trading -->
+        <div class="trading-row reverse">
+            <div class="trading-image">
+                <img src="https://finoways.com/assets/images/all-img/v5/30.jpeg" alt="Forex Icon">
+            </div>
+            <div class="trading-text">
+                <h3>What is Forex Trading?</h3>
+                <p>The Forex market, the largest and most liquid financial market globally, facilitates the exchange of currencies. Operating 24 hours a day across time zones, it boasts an average daily trading volume of $6 trillion. The market is influenced by economic indicators, geopolitical events, and market sentiment, offering countless opportunities for traders.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Add this Testimonials Section -->
+<section id="testimonials" class="testimonials">
+    <div class="testimonials-content">
+        <h2>What Our Clients Say</h2>
+        <p>Here's what our clients have to say about Finoways LLC.</p>
+
+        <!-- Carousel -->
+        <div class="testimonials-carousel">
+            <!-- Testimonial 1 -->
+            <div class="testimonial-item">
+                <iframe src="https://www.youtube.com/embed/SEMAl7bAiHY" frameborder="0" allowfullscreen></iframe>
+                <!-- <h3>John Doe</h3> -->
+                <p>"Finoways has transformed my trading experience. Their services are top-notch!"</p>
+            </div>
+            <!-- Testimonial 2 -->
+            <div class="testimonial-item">
+                <iframe src="https://www.youtube.com/embed/1oxh2_Mxjds" frameborder="0" allowfullscreen></iframe>
+                <!-- <h3>Jane Smith</h3> -->
+                <p>"I love the customer support and the insights I get from their trading tips."</p>
+            </div>
+            <!-- Testimonial 3 -->
+            <div class="testimonial-item">
+                <iframe src="https://www.youtube.com/embed/NWLEQvL62Nk" frameborder="0" allowfullscreen></iframe>
+                <!-- <h3>Alex Brown</h3> -->
+                <p>"The best investment decision I've made so far. Highly recommended!"</p>
+            </div>
+            <div class="testimonial-item">
+                <iframe src="https://youtube.com/embed/ySIfE_4bgWo" frameborder="0" allowfullscreen></iframe>
+                <!-- <h3>Alex Brown</h3> -->
+                <p>"The best investment decision I've made so far. Highly recommended!"</p>
+            </div>
+            <div class="testimonial-item">
+                <iframe src="https://youtube.com/embed/lvSZXePSUL8" frameborder="0" allowfullscreen></iframe>
+                <!-- <h3>Alex Brown</h3> -->
+                <p>"The best investment decision I've made so far. Highly recommended!"</p>
+            </div>
+            <div class="testimonial-item">
+                <iframe src="https://youtube.com/embed/5UoGdY-FZkg" frameborder="0" allowfullscreen></iframe>
+                <!-- <h3>Alex Brown</h3> -->
+                <p>"The best investment decision I've made so far. Highly recommended!"</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Include Slick CSS & JS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel/slick/slick.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel/slick/slick-theme.css">
+<script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/slick-carousel/slick/slick.min.js"></script>
+
+    <section class="subscribe" id="subscribe">
+        <h4>Subscribe</h4>
+        <p>Subscribe to learn more and get updates.</p>
+        <form onsubmit="handleSubscribe(event)">
+            <input type="email" placeholder="Type your email here" required>
+            <button type="submit" class="register-btn">Subscribe</button>
+        </form>
+    </section>
+
+    <footer id="contact">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">About Us</a></li>
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#subscribe">Subscribe</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Policies</h4>
+                <ul>
+                    <li><a href="#">Terms and Conditions</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Refund Policy</a></li>
+                    <li><a href="#">Disclaimer</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Contact Us</h4>
+                <ul>
+                    <li>+442038074962</li>
+                    <li>info@finoways.com</li>
+                    <li>Shams Business Center, Sharjah Media City Free Zone, Al Messaned, Sharjah, UAE</li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+    <script>
+        // Counter Animation
+        function animateCounter() {
+            const counter = document.getElementById('counter');
+            let count = 0;
+            const target = 80000;
+            const duration = 2000;
+            const increment = target / (duration / 16);
+
+            const timer = setInterval(() => {
+                count += increment;
+                if (count >= target) {
+                    clearInterval(timer);
+                    count = target;
+                }
+                counter.textContent = Math.floor(count).toLocaleString() + '+';
+            }, 16);
+        }
+
+        // Start counter animation when in view
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+                animateCounter();
+                observer.disconnect();
+            }
+        });
+
+        observer.observe(document.querySelector('.counter'));
+
+        // Form Handling
+        function handleSubmit(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Here you would typically send the data to your server
+            console.log('Form submitted:', data);
+            
+            // Show success message
+            alert('Registration successful! Welcome to Finoways.');
+            event.target.reset();
+        }
+
+        function handleSubscribe(event) {
+            event.preventDefault();
+            
+            const email = event.target.querySelector('input[type="email"]').value;
+            
+            // Here you would typically send the email to your server
+            console.log('Subscribed with email:', email);
+            
+            // Show success message
+            alert('Subscription successful! Thank you for subscribing.');
+            event.target.reset();
+        }
+
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Mobile Menu Toggle
+        const menuToggle = document.getElementById('menuToggle');
+        const navLinks = document.getElementById('navLinks');
+
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('.testimonials-carousel').slick({
+                dots: true,
+                infinite: true,
+                speed: 500,
+                slidesToShow: 2,
+                slidesToScroll: 1,
+                responsive: [
+                    {
+                        breakpoint: 768,
+                        settings: {
+                            slidesToShow: 1
+                        }
+                    }
+                ]
+            });
+        });
+    </script>
+    
+</body>
+</html>

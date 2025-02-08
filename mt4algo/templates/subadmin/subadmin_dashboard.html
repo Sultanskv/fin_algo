@@ -1,0 +1,565 @@
+{% extends "subadmin/subadmin_base.html" %}
+
+{% block title %}Dashboard{% endblock title %}
+
+{% block main %}
+<style>
+    /* Global Styles */
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #000;
+        color: #d4af37;
+        margin: 0;
+        padding: 20px;
+        box-sizing: border-box; /* Ensure padding is included in the total width and height */
+        overflow-x: hidden; /* Prevent horizontal overflow */
+    }
+
+    h5 {
+        color: #d4af37;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 24px;
+        text-transform: uppercase;
+        border-bottom: 2px solid #d4af37;
+        padding-bottom: 10px;
+    }
+
+    .dashboard-container {
+        padding: 20px;
+        max-width: 1200px; /* Limit the maximum width for better readability on large screens */
+        margin: 0 auto; /* Center the container */
+    }
+
+    .dashboard-section {
+        margin-bottom: 40px;
+        animation: fadeIn 1s ease-in-out;
+    }
+
+    /* Flex Container for Charts */
+    .flex-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between; /* Adjusts spacing between charts */
+        gap: 20px; /* Adds space between rows and columns */
+    }
+
+    /* Chart Container Styles */
+.chart-container {
+    flex: 1 1 10%;
+    min-width: 280px;
+    position: relative;
+    height: 250px;
+    background: linear-gradient(135deg, #2a2a2a, #444);
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+}
+
+    .chart-container:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(212, 175, 55, 0.5);
+    }
+
+    /* Responsive Adjustments for Charts */
+    @media (max-width: 1200px) {
+        .chart-container {
+            flex: 1 1 48%;
+        }
+    }
+
+    @media (max-width: 992px) {
+        .chart-container {
+            flex: 1 1 100%; /* Stacks charts vertically on medium screens */
+            height: 350px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        body {
+            padding: 10px;
+        }
+
+        .dashboard-container {
+            padding: 10px;
+        }
+
+        .chart-container {
+            height: 300px;
+        }
+
+        h5 {
+            font-size: 20px;
+            padding-bottom: 8px;
+            border-bottom-width: 1px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            margin: 8px;
+            font-size: 14px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .chart-container {
+            height: 250px;
+        }
+
+        h5 {
+            font-size: 18px;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            margin: 6px;
+            font-size: 12px;
+        }
+    }
+
+    /* Quick Actions Section */
+    .quick-actions {
+        text-align: center;
+        margin-top: 30px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .btn {
+        background-color: #d4af37;
+        color: #000;
+        padding: 10px 20px;
+        margin: 10px;
+        border-radius: 5px;
+        font-weight: bold;
+        font-size: 16px;
+        text-transform: uppercase;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        white-space: nowrap; /* Prevent text from wrapping */
+    }
+
+    .btn i {
+        margin-right: 8px;
+        transition: transform 0.3s ease;
+    }
+
+    .btn:hover {
+        background-color: #fff;
+        color: #d4af37;
+        transform: scale(1.05);
+    }
+
+    .btn:hover i {
+        transform: rotate(20deg);
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Tooltip Styles (Optional Enhancement) */
+    .chart-tooltip {
+        background-color: #d4af37;
+        color: #000;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 14px;
+    }
+
+    /* Ensure Canvas Elements are Responsive */
+    canvas {
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    /* Hide Scrollbar for Webkit Browsers */
+    body::-webkit-scrollbar {
+        width: 0px;
+        background: transparent; /* Optional: just to hide scrollbar */
+    }
+</style>
+
+<div class="dashboard-container">
+    <!-- Your Client Limit Section with Bar Chart and Pie Chart -->
+    <div class="dashboard-section">
+        <h5>Your Client Limit</h5>
+        <div class="flex-container">
+            <!-- Bar Chart for Total Limit, Available, In Use -->
+            <div class="chart-container">
+                <canvas id="clientLimitBarChart"></canvas>
+            </div>
+            <!-- Pie Chart for Paid Clients vs Demo Clients -->
+            <div class="chart-container">
+                <canvas id="clientTypePieChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Client License Status Section with Bar Chart and Pie Chart -->
+    <div class="dashboard-section">
+        <h5>Client License Status</h5>
+        <div class="flex-container">
+            <!-- Bar Chart for License Status -->
+            <div class="chart-container">
+                <canvas id="licenseStatusBarChart"></canvas>
+            </div>
+            <!-- Pie Chart for Client Status -->
+            <div class="chart-container">
+                <canvas id="clientStatusPieChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions Section -->
+    <div class="dashboard-section">
+        <h5>Quick Actions</h5>
+        <div class="quick-actions">
+            <button class="btn">
+                <i class="fas fa-plus-circle"></i> Create New Post
+            </button>
+            <button class="btn">
+                <i class="fas fa-users-cog"></i> Manage Users
+            </button>
+            <!-- Add more buttons as needed -->
+        </div>
+    </div>
+</div>
+
+<!-- Include Chart.js Library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Include Font Awesome for Icons -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        /* =======================
+           1. Your Client Limit - Bar Chart
+           ======================= */
+        const ctxClientLimitBar = document.getElementById('clientLimitBarChart').getContext('2d');
+        const clientLimitBarChart = new Chart(ctxClientLimitBar, {
+            type: 'bar',
+            data: {
+                labels: ['Total Limit', 'Available', 'In Use'],
+                datasets: [{
+                    label: 'Client Limits',
+                    data: [{{ client_limit }}, {{ client_available }}, {{ client_use }}],
+                    backgroundColor: [
+                        'rgba(212, 175, 55, 0.7)', // Total Limit
+                        'rgba(75, 192, 192, 0.7)', // Available
+                        'rgba(255, 99, 132, 0.7)'  // In Use
+                    ],
+                    borderColor: [
+                        'rgba(212, 175, 55, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(255, 99, 132, 1)'
+                    ],
+                    borderWidth: 1,
+                    borderRadius: 10,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: '#d4af37',
+                        titleColor: '#000',
+                        bodyColor: '#000',
+                        borderColor: '#d4af37',
+                        borderWidth: 1
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: '#d4af37',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        },
+                        grid: {
+                            color: '#555'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: '#d4af37',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        },
+                        grid: {
+                            color: '#555'
+                        }
+                    }
+                },
+                animation: {
+                    duration: 1500,
+                    easing: 'easeInOutQuart'
+                }
+            }
+        });
+
+        // Optional: Add click event to bar chart
+        document.getElementById('clientLimitBarChart').onclick = function (evt) {
+            const points = clientLimitBarChart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);
+            if (points.length) {
+                const firstPoint = points[0];
+                const label = clientLimitBarChart.data.labels[firstPoint.index];
+                const value = clientLimitBarChart.data.datasets[firstPoint.datasetIndex].data[firstPoint.index];
+                alert(`You clicked on ${label}: ${value}`);
+            }
+        };
+
+        /* =======================
+           2. Your Client Limit - Pie Chart (Paid vs Demo)
+           ======================= */
+        const ctxClientTypePie = document.getElementById('clientTypePieChart').getContext('2d');
+        const clientTypePieChart = new Chart(ctxClientTypePie, {
+            type: 'pie',
+            data: {
+                labels: ['Paid Clients', 'Demo Clients'],
+                datasets: [{
+                    data: [{{ paid }}, {{ Demo }}],
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.7)', // Paid Clients
+                        'rgba(255, 206, 86, 0.7)'  // Demo Clients
+                    ],
+                    borderColor: [
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(255, 206, 86, 1)'
+                    ],
+                    borderWidth: 1,
+                    borderRadius: 10,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#d4af37',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: '#d4af37',
+                        titleColor: '#000',
+                        bodyColor: '#000',
+                        borderColor: '#d4af37',
+                        borderWidth: 1,
+                        cornerRadius: 5,
+                        padding: 10
+                    }
+                },
+                animation: {
+                    animateScale: true,
+                    animateRotate: true,
+                    duration: 1500,
+                    easing: 'easeInOutQuart'
+                }
+            }
+        });
+
+        // Optional: Add click event to pie chart
+        document.getElementById('clientTypePieChart').onclick = function (evt) {
+            const points = clientTypePieChart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);
+            if (points.length) {
+                const firstPoint = points[0];
+                const label = clientTypePieChart.data.labels[firstPoint.index];
+                const value = clientTypePieChart.data.datasets[firstPoint.datasetIndex].data[firstPoint.index];
+                alert(`You clicked on ${label}: ${value}`);
+            }
+        };
+
+        /* =======================
+           3. Client License Status - Bar Chart
+           ======================= */
+        const ctxLicenseStatusBar = document.getElementById('licenseStatusBarChart').getContext('2d');
+        const licenseStatusBarChart = new Chart(ctxLicenseStatusBar, {
+            type: 'bar',
+            data: {
+                labels: ['Demo Expired', 'Valid Demo', 'Paid Expired', 'Valid Paid'],
+                datasets: [{
+                    label: 'License Status',
+                    data: [{{ demo_expired_login }}, {{ demo_not_expired_login }}, {{ paid_expired_login }}, {{ paid_not_expired_login }}],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.7)', // Demo Expired
+                        'rgba(75, 192, 192, 0.7)', // Valid Demo
+                        'rgba(255, 206, 86, 0.7)', // Paid Expired
+                        'rgba(54, 162, 235, 0.7)'  // Valid Paid
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(54, 162, 235, 1)'
+                    ],
+                    borderWidth: 1,
+                    borderRadius: 10,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: '#d4af37',
+                        titleColor: '#000',
+                        bodyColor: '#000',
+                        borderColor: '#d4af37',
+                        borderWidth: 1
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: '#d4af37',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        },
+                        grid: {
+                            color: '#555'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: '#d4af37',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        },
+                        grid: {
+                            color: '#555'
+                        }
+                    }
+                },
+                animation: {
+                    duration: 1500,
+                    easing: 'easeInOutQuart'
+                }
+            }
+        });
+
+        // Optional: Add click event to license status bar chart
+        document.getElementById('licenseStatusBarChart').onclick = function (evt) {
+            const points = licenseStatusBarChart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);
+            if (points.length) {
+                const firstPoint = points[0];
+                const label = licenseStatusBarChart.data.labels[firstPoint.index];
+                const value = licenseStatusBarChart.data.datasets[firstPoint.datasetIndex].data[firstPoint.index];
+                alert(`You clicked on ${label}: ${value}`);
+            }
+        };
+
+        /* =======================
+           4. Client Status - Pie Chart
+           ======================= */
+        const ctxClientStatusPie = document.getElementById('clientStatusPieChart').getContext('2d');
+        const clientStatusPieChart = new Chart(ctxClientStatusPie, {
+            type: 'pie',
+            data: {
+                labels: ['Logged In', 'Logged Out', 'API On', 'API Off'],
+                datasets: [{
+                    data: [{{ Panel_Login }}, {{ Panel_Logout }}, {{ api_on }}, {{ api_off }}],
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.7)', // Logged In
+                        'rgba(255, 99, 132, 0.7)', // Logged Out
+                        'rgba(54, 162, 235, 0.7)', // API On
+                        'rgba(255, 206, 86, 0.7)'  // API Off
+                    ],
+                    borderColor: [
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)'
+                    ],
+                    borderWidth: 1,
+                    borderRadius: 10,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#d4af37',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: '#d4af37',
+                        titleColor: '#000',
+                        bodyColor: '#000',
+                        borderColor: '#d4af37',
+                        borderWidth: 1,
+                        cornerRadius: 5,
+                        padding: 10
+                    }
+                },
+                animation: {
+                    animateScale: true,
+                    animateRotate: true,
+                    duration: 1500,
+                    easing: 'easeInOutQuart'
+                }
+            }
+        });
+
+        // Optional: Add click event to pie chart
+        document.getElementById('clientStatusPieChart').onclick = function (evt) {
+            const points = clientStatusPieChart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);
+            if (points.length) {
+                const firstPoint = points[0];
+                const label = clientStatusPieChart.data.labels[firstPoint.index];
+                const value = clientStatusPieChart.data.datasets[firstPoint.datasetIndex].data[firstPoint.index];
+                alert(`You clicked on ${label}: ${value}`);
+            }
+        };
+    });
+</script>
+{% endblock %}

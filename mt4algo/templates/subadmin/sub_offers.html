@@ -1,0 +1,197 @@
+{% extends "subadmin/subadmin_base.html" %}
+
+{% load static %}
+{% block main %}
+<style>
+    /* Keyframe Animations */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    @keyframes pop {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.1);
+        }
+    }
+
+    /* Overall Page Styling */
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #1e1e1e; /* Dark background */
+        color: #d4af37; /* Gold color for text */
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+    }
+
+    /* Container Styling */
+    .container {
+        text-align: center;
+        padding: 20px;
+        background-color: #000; /* Black background */
+        border-radius: 20px;
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+        animation: fadeIn 1s ease-out;
+        margin: 20px auto;
+        max-width: 1200px;
+        color: #fff;
+    }
+
+    /* Limited Offer Tag */
+    .limited-offer {
+        background-color: #d4af37; /* Gold */
+        color: #000; /* Black text */
+        padding: 5px 20px;
+        display: inline-block;
+        border-radius: 20px;
+        margin-bottom: 10px;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        animation: fadeIn 1s ease-out 0.2s;
+        font-weight: bold;
+    }
+
+    /* Title and Section Headers */
+    h1 {
+        color: #d4af37; /* Gold */
+        font-size: 36px;
+        margin: 10px 0;
+        text-transform: uppercase;
+        animation: fadeIn 1s ease-out 0.4s;
+        letter-spacing: 2px;
+    }
+
+    .premium-plans {
+        font-size: 18px;
+        background-color: #444; /* Dark gray */
+        color: #d4af37; /* Gold */
+        display: inline-block;
+        padding: 5px 15px;
+        border-radius: 20px;
+        margin-bottom: 20px;
+        font-weight: bold;
+        animation: fadeIn 1s ease-out 0.6s;
+    }
+
+    /* Offer Boxes */
+    .offers {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .offer {
+        background: #222; /* Dark gray */
+        border-radius: 10px;
+        padding: 20px;
+        width: 250px;
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        animation: fadeIn 0.5s ease-out;
+        color: #fff;
+    }
+
+    .offer:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 30px rgba(212, 175, 55, 0.5);
+    }
+
+    .offer p {
+        font-size: 16px;
+        margin: 10px 0;
+        color: #ffffff; /* Gold */
+    }
+
+    /* Offer Price and Discount */
+    .offer-price {
+        font-size: 20px;
+        background-color: #d4af37; /* Gold */
+        color: #000; /* Black text */
+        border-radius: 20px;
+        display: inline-block;
+        padding: 5px 20px;
+        margin: 15px 0;
+        font-weight: bold;
+    }
+
+    /* Revenue Styling */
+    .revenue {
+        font-size: 14px;
+        color: #aaa; /* Light gray */
+        margin-top: 10px;
+        display: block;
+    }
+
+    /* Buy Now Button */
+    .buy-now {
+        background-color: #d4af37; /* Gold */
+        color: #000; /* Black text */
+        padding: 10px 30px;
+        border: none;
+        border-radius: 20px;
+        font-size: 18px;
+        cursor: pointer;
+        margin-top: 20px;
+        transition: background-color 0.3s ease;
+        font-weight: bold;
+    }
+
+    .buy-now:hover {
+        background-color: #fff; /* White */
+        color: #d4af37; /* Gold text */
+        border: 1px solid #d4af37;
+    }
+
+    /* Responsive styles */
+    @media (max-width: 768px) {
+        .container {
+            padding: 20px;
+            margin: 10px;
+        }
+
+        .offer {
+            width: 100%;
+            max-width: 300px;
+        }
+
+        h1 {
+            font-size: 28px;
+        }
+
+        .buy-now {
+            font-size: 16px;
+            padding: 8px 20px;
+        }
+    }
+</style>
+
+<div class="container">
+    <div class="limited-offer">Limited Offer</div>
+
+    <h1>Premium Plans</h1>
+
+    <div class="premium-plans">Exclusive Deals for You</div>
+
+    <div class="offers">
+        {% for off in offer %}
+        <div class="offer">
+            <p>{{ off.Offer_Title }}</p>
+            <p class="offer-price">Up to {{ off.offer_price }} USD</p>
+            <span class="revenue">Revenue: {{ off.revenue }}</span>
+
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

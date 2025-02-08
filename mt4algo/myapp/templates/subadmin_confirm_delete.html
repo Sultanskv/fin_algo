@@ -1,0 +1,11 @@
+{% extends 'admin_base.html' %}
+
+{% block main %}
+<h2>Delete Sub-admin</h2>
+<p>Are you sure you want to delete {{ subadmin.subadmin_name_first }}?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Confirm</button>
+    <a href="{% url 'subadmin_list' %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

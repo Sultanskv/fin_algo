@@ -1,0 +1,77 @@
+{% extends 'client_base.html' %}
+
+{% block main %}
+<style>
+    .table-container {
+        max-height: 400px;
+        overflow-x: auto;
+        overflow-y: auto;
+        margin-top: 20px;
+    }
+   
+</style>
+
+<div class="content">
+    <div class="row">
+        <div class="col-sm md lg xl xxl-12">
+            <div class="card">
+                <div class="card-header row">
+                    <div class="col-md-10">
+                        <h4 class="card-title">Client Status</h4>
+                    </div>
+                   
+                </div>
+                
+                <div class="card-body">
+                    <div class="table-responsive table-container">
+                        <table class="table tablesorter table-bordered" id="example">
+                            <thead class="text-primary bg-secondary">
+                                <tr>
+                                    <th>Id</th>
+                                    <th>User ID</th>
+                                    <th>Name</th>
+                                    <th>Time</th>
+                                    <th>Email</th>
+                                    <th>Phone Number</th>
+                                    <th>Panel Status</th>
+                                    <th>Broker Status</th>
+                                    <th>IP Address</th>
+                                    <th>Updated By</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if st %}
+                                    {% for client in st %}
+                                    <tr>
+                                        <td>{{ client.id }}</td>
+                                        <td>{{ client.clint_id }}</td>
+                                        <td>{{ client.name }}</td>
+                                        <td>{{ client.time }}</td>
+                                        <td>{{ client.clint_email }}</td>
+                                        <td>{{ client.clint_phone_number }}</td>
+                                        <td style="color: {% if client.client_status == 'Algo on' %} green {% else %} red {% endif %};">
+                                            {{ client.client_status }}
+                                        </td>
+                                        <td style="color: {% if client.trading == 'Live' %} green {% else %} red {% endif %};">
+                                            {{ client.trading }}
+                                        </td>
+                                        <td>{{ client.ip_address }}</td>
+                                        <td>{{ client.updated_by }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="10">No client status found for today.</td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                            
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,126 @@
+
+{% extends "admin_base.html" %}
+
+{% block title %}Sub-Admin Offres List{% endblock title %}
+
+{% block main %}
+<!DOCTYPE html>  
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offers List</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<style>
+    body {
+        background-color:rgb(0, 0, 0); /* Pure black background */
+        color: #FFD700; /* Gold text color */
+        font-family: Arial, sans-serif;
+    }
+    
+    h1 {
+        color: #FFD700; /* Gold for headings */
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    
+    a {
+        color: #FFD700; /* Gold links */
+        text-decoration: none;
+    }
+    
+    a:hover {
+        color: #FFA500; /* Slightly brighter gold on hover */
+    }
+    
+    .table {
+        background-color: #121212; /* Slightly off-black table background */
+        color: #FFD700; /* Gold text */
+    }
+    
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: #1E1E1E; /* Dark gray for striped rows */
+    }
+    
+    .table th {
+        background-color: #333333; /* Darker background for table headers */
+        color: #FFD700; /* Gold text */
+    }
+    
+    .btn-primary {
+        background-color: #FFD700; /* Gold button */
+        border-color: #FFD700; /* Gold border */
+        color: #000000; /* Black text */
+    }
+    
+    .btn-primary:hover {
+        background-color: #FFA500; /* Slightly brighter gold */
+        border-color: #FFA500;
+        color: #FFFFFF; /* White text on hover */
+    }
+    
+    .btn-warning {
+        background-color: #FFA500; /* Bright gold */
+        border-color: #FFA500;
+        color: #000000; /* Black text */
+    }
+    
+    .btn-warning:hover {
+        background-color: #FFD700; /* Gold hover */
+        border-color: #FFD700;
+        color: #FFFFFF;
+    }
+    
+    .btn-danger {
+        background-color: #FF4500; /* Reddish gold for delete */
+        border-color: #FF4500;
+        color: #FFFFFF; /* White text */
+    }
+    
+    .btn-danger:hover {
+        background-color: #FF6347; /* Tomato red hover */
+        border-color: #FF6347;
+    }    
+</style>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Offers</h1>
+        <a href="{% url 'subadmin_offer_add' %}" class="btn btn-primary mb-3">Add New Offer</a>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Offer Title</th>
+                    <th>Earning $ USD</th>
+                    <th>Revenue $ USD</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for offer in offers %}
+                    <tr>
+                        <td>{{ offer.Title }}</td>
+                        <td>{{ offer.Offer_Title }}</td>
+                        <td>{{ offer.offer_price }}</td>
+                        <td>{{ offer.revenue }}</td>
+                        <td>
+                          <a href="{% url 'subadmin_offer_edit' offer.pk %}" class="btn btn-warning btn-sm">Edit</a>
+                        <a href="{% url 'subadmin_offer_delete' offer.pk %}" class="btn btn-danger btn-sm">Delete</a>
+                        
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5">No offers available.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+{% endblock %}

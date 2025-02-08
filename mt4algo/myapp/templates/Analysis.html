@@ -1,0 +1,172 @@
+{% extends "client_base.html" %}
+
+{% block main %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Forex Trading Dashboard</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
+            height: 100vh;
+            margin: 0;
+            animation: fadeIn 1s ease-in-out;
+        }
+        h2 {
+            text-align: center;
+            color: #ffd700;
+        }
+        .card {
+            height: 600px;
+            background-color: #000;
+            color: #fff;
+        }
+        .card-title {
+            text-align: center;
+        }
+        .tradingview-widget-container {
+            height: 100%;
+            width: 100%;
+        }
+        .tradingview-widget-container__widget {
+            height: 600px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- TradingView Ticker Tape Widget BEGIN -->
+    <div class="tradingview-widget-container">
+        <div class="tradingview-widget-container__widget"></div>
+        <div class="tradingview-widget-copyright">
+        </div>
+        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+        {
+            "symbols": [
+                {
+                    "proName": "FOREXCOM:SPXUSD",
+                    "title": "S&P 500 Index"
+                },
+                {
+                    "proName": "FOREXCOM:NSXUSD",
+                    "title": "US 100 Cash CFD"
+                },
+                {
+                    "proName": "FX_IDC:EURUSD",
+                    "title": "EUR to USD"
+                },
+                {
+                    "proName": "BITSTAMP:BTCUSD",
+                    "title": "Bitcoin"
+                },
+                {
+                    "proName": "BITSTAMP:ETHUSD",
+                    "title": "Ethereum"
+                }
+            ],
+            "showSymbolLogo": true,
+            "isTransparent": false,
+            "displayMode": "adaptive",
+            "colorTheme": "dark",
+            "locale": "en"
+        }
+        </script>
+    </div>
+    <!-- TradingView Ticker Tape Widget END -->
+
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                <!-- TradingView Widget BEGIN -->
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Fundamental & Technical</h4>
+                    </div>
+                    <div class="card-body">
+                        <!-- TradingView Widget BEGIN -->
+                        <div class="tradingview-widget-container">
+                          <div class="tradingview-widget-container__widget"></div>
+                          <div class="tradingview-widget-copyright">
+                            </div>
+                          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-screener.js" async>
+                          {
+                          "width": "100%",
+                          "height": 550,
+                          "defaultColumn": "overview",
+                          "defaultScreen": "general",
+                          "market": "forex",
+                          "showToolbar": true,
+                          "colorTheme": "dark",
+                          "locale": "en"
+                        }
+                          </script>
+                        </div>
+                        <!-- TradingView Widget END -->
+                    </div>
+                </div>
+                <!-- TradingView Widget END -->
+            </div>
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Live Rates</h4>
+                    </div>
+                    <!-- TradingView Widget BEGIN -->
+                    <div class="tradingview-widget-container">
+                        <div class="tradingview-widget-container__widget"></div>
+                        <div class="tradingview-widget-copyright">
+                        </div>
+                        <script type="text/javascript"
+                            src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+                            {
+                                "autosize": true,
+                                "symbol": "FOREXCOM:XAUUSD",
+                                "interval": "D",
+                                "timezone": "Etc/UTC",
+                                "theme": "dark",
+                                "style": "1",
+                                "locale": "en",
+                                "withdateranges": true,
+                                "hide_side_toolbar": false,
+                                "allow_symbol_change": true,
+                                "watchlist": [
+                                    "FXOPEN:XAUUSD",
+                                    "OANDA:GBPJPY",
+                                    "OANDA:EURUSD",
+                                    "OANDA:EURJPY",
+                                    "OANDA:USDJPY",
+                                    "OANDA:GBPUSD",
+                                    "TVC:USOIL",
+                                    "OANDA:NZDUSD",
+                                    "BLACKBULL:US30",
+                                    "FX:USDCAD",
+                                    "TVC:DXY"
+                                ],
+                                "details": true,
+                                "hotlist": true,
+                                "calendar": false,
+                                "support_host": "https://www.tradingview.com"
+                            }
+                        </script>
+                    </div>
+                    <!-- TradingView Widget END -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
+
+{% endblock %}

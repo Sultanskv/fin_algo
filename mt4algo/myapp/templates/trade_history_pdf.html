@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trade History PDF</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 12px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        h1, h3 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>{{ client.name_first }}'s Trade History</h1>
+    <p><strong>Date Range:</strong> {{ start_date }} to {{ end_date }}</p>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Entry Time</th>
+                <th>Symbol</th>
+                <th>Type</th>
+                <th>Quantity</th>
+                <th>Entry Price</th>
+                <th>Exit Time</th>
+                <th>Exit Price</th>
+                <th>P&L</th>
+                <th>Cumulative P&L</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for trade in trades %}
+            <tr>
+                <td>{{ trade.id }}</td>
+                <td>{{ trade.signal_time }}</td>
+                <td>{{ trade.symbol }}</td>
+                <td>{{ trade.trade_type }}</td>
+                <td>{{ trade.quantity }}</td>
+                <td>{{ trade.entry_price }}</td>
+                <td>{{ trade.exit_time }}</td>
+                <td>{{ trade.exit_price }}</td>
+                <td>{{ trade.p_l|floatformat:2 }}</td>
+                <td>{{ trade.cumulative_p_l|floatformat:2 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <h3>Total Cumulative P&L: {{ total_cumulative_p_l|floatformat:2 }}</h3>
+</body>
+</html>
