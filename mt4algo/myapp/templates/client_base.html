@@ -11,394 +11,250 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <title>Finoways</title>
+  <title>Investezzy</title>
   <style>
-    .navbar-custom {
-      background-color: black;
-      box-shadow: 0 4px 8px rgba(245, 222, 74, 0.5);
-      transition: height 0.3s ease;
-    }
+/* Global body styles with a light gradient background */
+body {
+  background: linear-gradient(to bottom right, #ffffff, #f8f9fa);
+  background-size: cover;
+  color: #343a40;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  height: 100%;
+}
 
-    .navbar-custom .navbar-brand,
-    .navbar-custom .navbar-nav .nav-link {
-      color: #000;
-    }
-
-    .navbar-custom .nav-item.active .nav-link,
-    .navbar-custom .nav-item:hover .nav-link {
-      color: black;
-      background-color: gold;
-      border-radius: 5px;
-    }
+/* Navbar styles */
+.navbar-custom {
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 86, 179, 0.2);
+  transition: height 0.3s ease;
+  position: relative;
+}
+.navbar-custom .navbar-brand,
+.navbar-custom .navbar-nav .nav-link {
+  color: #343a40;
+}
+.navbar-custom .nav-item.active .nav-link,
+.navbar-custom .nav-item:hover .nav-link {
+  color: #ffffff;
+  background-color: #0056b3;
+  border-radius: 5px;
+}
 .navbar-light .navbar-nav .nav-link {
-    color: rgb(255 255 255);
+  color: #343a40;
 }
-    .card {
-      background-color: #000;
-      box-shadow: 0 0 20px rgba(245, 222, 74, 0.5);
-    }
-
-    .card-custom {
-      margin-top: 20px;
-      background-color: black;
-      color: gold;
-      box-shadow: 0 0 20px rgba(245, 222, 74, 0.5);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .card-custom:hover {
-      transform: translateY(-5px);
-    }
-
-    .card-custom .card-header {
-      background-color: #ffd700;
-      color: black;
-      border-bottom: 1px solid black;
-    }
-
-    .card-custom .card-body {
-      background-color: #000000;
-      color: gold;
-    }
-
-    .table {
-      width: 100%;
-      margin-bottom: 1rem;
-      color: #ffffff;
-      font-size: large;
-    }
-
-    .card-custom .card-footer {
-      background-color: gold;
-      color: black;
-      border-top: 1px solid black;
-    }
-
-    .power-button {
-      position: fixed;
-      width: 60px;
-      height: 60px;
-      background-color: rgb(255, 6, 6);
-      border: black;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      bottom: 100px;
-      right: 20px;
-      transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-      z-index: 1000;
-    }
-
-    .power-button.on {
-      background-color: rgb(65, 227, 36);
-      animation: pulse 1s infinite;
-      box-shadow: 0 0 15px gold;
-    }
-
-    .power-button i {
-      color: rgb(0, 0, 0);
-      font-size: 32px;
-    }
-
-    .power-button-text {
-      font-size: 25px;
-      color: gold;
-      margin-left: 450px;
-      font-weight: bold;
-    }
-
-    @keyframes pulse {
-      0% {
-        transform: scale(1);
-      }
-
-      50% {
-        transform: scale(1.1);
-      }
-
-      100% {
-        transform: scale(1);
-      }
-    }
-
-    .navbar-custom .nav-link i {
-      font-size: 24px;
-      color: gold;
-    }
-
-    body {
-      background: linear-gradient(to bottom right, #000000, #000000);
-      background-size: cover;
-      color: gold;
-    }
-
-    .modal-content {
-      background-color: #000;
-      color: gold;
-      border: 1px solid gold;
-    }
-
-    .modal-header .close {
-      color: gold;
-    }
-
-    .sidebar-bottom {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background-color: black;
-      display: flex;
-      justify-content: space-around;
-      padding: 10px 0;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-      z-index: 1000;
-    }
-
-    .sidebar-bottom .list-group-item {
-      background-color: rgba(0, 0, 0, 0);
-      color: gold;
-      border: none;
-      text-align: center;
-      flex-grow: 1;
-      transition: background-color 0.3s ease, color 0.3s ease;
-    }
-
-.sidebar-bottom .list-group-item:hover {
-    background-color: #ffd70000;
-    color: #e4c625;
+.navbar-custom .center-text {
+  color: #0056b3;
+  font-size: 1.5rem;
+  font-weight: bold;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
-
-.list-group-item-warning.list-group-item-action.active {
-    color: #fff;
-    background-color: #85640400;
-    border-color: #856404;
+.navbar-custom .nav-link i {
+  font-size: 24px;
+  color: #0056b3;
 }
-    .sidebar-bottom .list-group-item i {
-      display: block;
-      font-size: 20px;
-      margin-bottom: 5px;
-    }
-
-    .sidebar-bottom .list-group-item span {
-      font-size: smaller;
-    }
-
-    .container-fluid {
-      padding-bottom: 60px;
-    }
-
-    .table-bordered td,
-    .table-bordered th {
-      border: 1px solid #1e1e1e;
-    }
-
-    @media (max-width: 768px) {
-      .navbar-custom {
-        height: auto;
-        padding: 10px;
-      }
-
-      .card-custom {
-        margin-top: 10px;
-        font-size: smaller;
-      }
-
-      .sidebar-bottom {
-        display: flex;
-        justify-content: space-around;
-        padding: 5px 0;
-      }
-
-      .burger-menu {
-        display: none;
-      }
-    }
-
-    @media (max-width: 576px) {
-      .navbar-custom {
-        height: auto;
-        padding: 10px 10px;
-      }
-
-      .card-custom {
-        margin-top: 10px;
-        font-size: smaller;
-      }
-
-      .sidebar-bottom {
-        display: flex;
-        justify-content: space-around;
-        padding: 5px 0;
-      }
-
-      .burger-menu {
-        display: none;
-      }
-    }
-
-    .navbar-custom .center-text {
-      color: gold;
-      font-size: 1.5rem;
-      font-weight: bold;
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    /* Animation for the icons */
-    .fa-bell, .fa-user-circle, .sidebar-bottom .list-group-item i {
-      transition: transform 0.3s ease, color 0.3s ease;
-    }
-
-    .fa-bell:hover, .fa-user-circle:hover, .sidebar-bottom .list-group-item:hover i {
-      transform: scale(1.2);
-      color: black;
-    }
-    .navbar-custom .pay-now-btn {
-  color: gold;
-  background-color: gold;
-  border: 2px solid gold;
+.navbar-custom .pay-now-btn {
+  color: #0056b3;
+  background-color: #0056b3;
+  border: 2px solid #0056b3;
   border-radius: 5px;
   padding: 5px 15px;
   font-weight: bold;
   transition: all 0.3s ease;
 }
-
 .navbar-custom .pay-now-btn:hover {
-  background-color: rgb(78, 51, 185);
-  color: black;
-  box-shadow: 0 0 10px gold;
+  background-color: #004494;
+  color: #ffffff;
+  box-shadow: 0 0 10px #0056b3;
 }
-.modal-content {
-      background-color: #000;
-      color: gold;
-      border: 2px solid #ffc107;
-      border-radius: 10px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
 
-    .modal-content:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
-    }
+/* Card styles */
+.card {
+  background-color: #ffffff;
+  box-shadow: 0 0 20px rgba(0, 86, 179, 0.2);
+}
+.card-custom {
+  margin-top: 20px;
+  background-color: #ffffff;
+  color: #343a40;
+  box-shadow: 0 0 20px rgba(0, 86, 179, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card-custom:hover {
+  transform: translateY(-5px);
+}
+.card-custom .card-header {
+  background-color: #0056b3;
+  color: #ffffff;
+  border-bottom: 1px solid #0056b3;
+}
+.card-custom .card-body {
+  background-color: #ffffff;
+  color: #343a40;
+}
+.card-custom .card-footer {
+  background-color: #0056b3;
+  color: #ffffff;
+  border-top: 1px solid #0056b3;
+}
 
-    .modal-header {
-      border-bottom: 1px solid #ffc107;
-      background-color: black;
-    }
-
-    .modal-title {
-      color: gold;
-      font-weight: bold;
-    }
-
-    .modal-header .close {
-      color: gold;
-      font-size: 1.5rem;
-    }
-
-    .modal-body {
-      padding: 20px;
-      background-color: black;
-    }
-
-    .modal-body ul {
-      padding-left: 0;
-      list-style: none;
-
-    }
-
-    .modal-body ul li {
-      padding: 5px 0;
-      font-size: 1.1rem;
-      color: #fff;
-    }
-
-    .fugu-center-btn {
-      margin-top: 10px;
-      text-align: center;
-    }
-
-    .fugu-btn {
-      background-color: #ffc107;
-      color: black;
-      padding: 10px 20px;
-      border-radius: 5px;
-      font-weight: bold;
-      text-decoration: none;
-      transition: all 0.3s ease;
-    }
-
-    .fugu-btn:hover {
-      background-color: #e0a800;
-      color: white;
-      box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
-    }
-
-    .fugu--iconbox-icons {
-      margin-top: 20px;
-    }
-
-    .fugu--iconbox-icons img {
-      width: 100%;
-      height: auto;
-      border-radius: 10px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .fugu--iconbox-icons img:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
-    }
-
-    @media (min-width: 768px) {
-      .fugu--iconbox-icons {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
-      }
-    }
-
-    @media (max-width: 767px) {
-      .fugu--iconbox-icons {
-        display: grid;
-        grid-template-columns: repeat(1, 1fr);
-        gap: 15px;
-      }
-    }
-    .modal-content {
-  position: relative;
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-direction: column;
-  flex-direction: column;
+/* Table styling */
+.table {
   width: 100%;
-  pointer-events: auto;
-  background-color: #000;
-  background-clip: padding-box;
-  border: 1px solid rgba(0,0,0,.2);
-  border-radius: .3rem;
-  outline: 0;
+  margin-bottom: 1rem;
+  color: #343a40;
+  font-size: large;
 }
-@media (min-width: 992px) {
-  .navbar-expand-lg .navbar-nav .nav-link {
-    padding-right: .5rem;
-    padding-left: 1.6rem;
-  }
+.table-bordered td,
+.table-bordered th {
+  border: 1px solid #dee2e6;
 }
+
+/* Power button styles */
+.power-button {
+  position: fixed;
+  width: 60px;
+  height: 60px;
+  background-color: #dc3545;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  bottom: 100px;
+  right: 20px;
+  transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  z-index: 1000;
+}
+.power-button.on {
+  background-color: #28a745;
+  animation: pulse 1s infinite;
+  box-shadow: 0 0 15px #0056b3;
+}
+.power-button i {
+  color: #ffffff;
+  font-size: 32px;
+}
+.power-button-text {
+  font-size: 25px;
+  color: #0056b3;
+  margin-left: 450px;
+  font-weight: bold;
+}
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* Modal styles */
+.modal-content {
+  background-color: #ffffff;
+  color: #343a40;
+  border: 2px solid #0056b3;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 86, 179, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.modal-content:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0, 86, 179, 0.4);
+}
+.modal-header {
+  border-bottom: 1px solid #0056b3;
+  background-color: #f8f9fa;
+}
+.modal-header .close {
+  color: #0056b3;
+  font-size: 1.5rem;
+}
+.modal-title {
+  color: #0056b3;
+  font-weight: bold;
+}
+.modal-body {
+  padding: 20px;
+  background-color: #ffffff;
+}
+.modal-body ul {
+  padding-left: 0;
+  list-style: none;
+}
+.modal-body ul li {
+  padding: 5px 0;
+  font-size: 1.1rem;
+  color: #343a40;
+}
+
+/* Sidebar bottom styles */
+.sidebar-bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #f8f9fa;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+.sidebar-bottom .list-group-item {
+  background-color: transparent;
+  color: #343a40;
+  border: none;
+  text-align: center;
+  flex-grow: 1;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+.sidebar-bottom .list-group-item:hover {
+  background-color: #e9ecef;
+  color: #0056b3;
+}
+.sidebar-bottom .list-group-item i {
+  display: block;
+  font-size: 20px;
+  margin-bottom: 5px;
+}
+.sidebar-bottom .list-group-item span {
+  font-size: smaller;
+}
+
+/* Help Center button */
+.help-center-button {
+  position: fixed;
+  bottom: 170px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  background-color: #0056b3;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #ffffff;
+  font-size: 32px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 0 10px rgba(0, 86, 179, 0.3);
+  z-index: 1000;
+}
+.help-center-button:hover {
+  background-color: #004494;
+  box-shadow: 0 0 15px rgba(0, 86, 179, 0.5);
+  transform: translateY(-5px);
+}
+
+/* Spinner (for AI Trading icon) */
 .center-item {
   position: relative;
   width: 80px;
   height: 80px;
-  margin-top: -30px; /* Raises the icon above the bar */
+  margin-top: -30px;
   flex-grow: 0;
 }
-/* Spinner Container */
 .spinner-container {
   position: relative;
   width: 100px;
@@ -407,309 +263,93 @@
   justify-content: center;
   align-items: center;
 }
-
-/* Rotating Spinner */
 .spinner {
   position: absolute;
   width: 100px;
   height: 100px;
-  background-image: linear-gradient(rgb(255 222 4) 35%, rgb(0 255 158));
+  background-image: linear-gradient(#0056b3 35%, #28a745);
   animation: spinning82341 1.7s linear infinite;
   border-radius: 50%;
   filter: blur(1px);
-  box-shadow: 0px -5px 20px 0px rgb(186, 66, 255), 0px 5px 20px 0px rgb(0, 225, 255);
+  box-shadow: 0px -5px 20px 0px rgba(0, 86, 179, 0.3), 0px 5px 20px 0px rgba(40, 167, 69, 0.3);
 }
-
-/* Inner Blurred Circle */
 .spinner1 {
   position: absolute;
   width: 100px;
   height: 100px;
-  background-color: rgb(36, 36, 36);
+  background-color: #e9ecef;
   border-radius: 50%;
   filter: blur(10px);
 }
-
-/* Static Text */
 .spinner-text {
   position: relative;
   font-size: 24px;
   font-weight: bold;
-  color: rgb(255 239 157);
-  text-shadow: 0px 0px 10px rgb(255, 255, 255), 0px 0px 20px rgb(0, 225, 255);
-  z-index: 1; /* Ensures text stays above spinner */
-  pointer-events: none; /* Ensures text is not clickable */
+  color: #0056b3;
+  text-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1), 0px 0px 20px rgba(40, 167, 69, 0.1);
+  z-index: 1;
+  pointer-events: none;
+}
+@keyframes spinning82341 {
+  to { transform: rotate(360deg); }
 }
 
-/* Spinner Animation */
-@keyframes spinning82341 {
-  to {
-    transform: rotate(360deg);
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .navbar-custom {
+    height: auto;
+    padding: 10px;
+  }
+  .card-custom {
+    margin-top: 10px;
+    font-size: smaller;
+  }
+  .sidebar-bottom {
+    padding: 5px 0;
+  }
+  .burger-menu {
+    display: none;
   }
 }
-.help-center-button {
-  position: fixed;
-  bottom: 170px; /* Adjust this value as needed */
-  right: 20px;
-  width: 60px;
-  height: 60px;
-  background-color: gold;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: black;
-  font-size: 32px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-  z-index: 1000;
-}
-
-.help-center-button:hover {
-  background-color: black;
-  color: gold;
-  box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
-  transform: translateY(-5px);
-}
-
-/* Modal for Notification */
-.modal-content {
-    background-color: #2f2f2f;  /* Dark background */
-    color: #ffd700;  /* Gold text color for contrast */
-    border: 1px solid #444;  /* Subtle border */
-    border-radius: 10px;  /* Rounded corners */
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);  /* Soft shadow for popup effect */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.modal-content:hover {
-    transform: translateY(-5px);  /* Lift the popup on hover */
-    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.6);  /* Add more shadow when hovered */
-}
-
-.modal-header {
-    background-color: #1a1a1a;  /* Slightly darker header */
-    color: #ffd700;  /* Gold title */
-    border-bottom: 1px solid #444;  /* Border for separation */
-}
-
-.modal-title {
-    font-weight: bold;
-    font-size: 1.25rem;  /* Larger font size for title */
-}
-
-.modal-header .close {
-    color: #ffd700;  /* Gold close button */
-    font-size: 1.5rem;
-}
-
-.modal-body {
-    background-color: #2f2f2f;  /* Dark background to match the modal */
-    padding: 15px;
-    max-height: 300px;
-    overflow-y: auto;  /* Scroll if the content overflows */
-}
-
-.modal-body ul {
-    padding-left: 0;
-    list-style: none;
-}
-
-.modal-body ul li {
-    padding: 12px;
-    font-size: 1.1rem;
-    border-bottom: 1px solid #444;  /* Divider between messages */
-    transition: background-color 0.3s ease;
-    color: #fff;
-}
-
-.modal-body ul li:hover {
-    background-color: #444;  /* Hover effect for each message */
-    cursor: pointer;
-}
-
-.modal-footer {
-    background-color: #1a1a1a;  /* Dark footer to match the header */
-    border-top: 1px solid #444;
-    padding: 10px 20px;
-    text-align: center;
-}
-
-.modal-footer button {
-    color: #ffd700;
-    background-color: #333;
-    border: 1px solid #444;
-    padding: 8px 16px;
-    font-weight: bold;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-}
-
-.modal-footer button:hover {
-    background-color: #444;  /* Slightly lighter background on hover */
-    color: black;
-}
-
-.notification-list {
-    max-height: 400px;
-    overflow-y: auto;
-}
-
-.notification-list li {
-    background-color: #3a3a3a;  /* Dark background for each notification */
-    color: #ffd700;  /* Gold color for text */
-    border-left: 5px solid #ffc107;  /* Gold-colored left border */
+@media (max-width: 576px) {
+  .navbar-custom {
+    height: auto;
     padding: 10px;
-    margin-bottom: 10px;
-    transition: background-color 0.3s ease;
-}
-
-.notification-list li.unread {
-    font-weight: bold;
-}
-
-.notification-list li:hover {
-    background-color: #444;  /* Darker background on hover */
-    cursor: pointer;
-}
-
-.clear-notifications {
-    background-color: #1a1a1a;
-    color: #ffd700;
-    border: 1px solid #444;
-    padding: 10px;
+  }
+  .card-custom {
     margin-top: 10px;
-    border-radius: 5px;
-    text-align: center;
-    cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    font-size: smaller;
+  }
+  .sidebar-bottom {
+    padding: 5px 0;
+  }
+  .burger-menu {
+    display: none;
+  }
 }
 
-.clear-notifications:hover {
-    background-color: #444;
-    color: #ffffff;
+/* Additional helper classes */
+.password-mask {
+  letter-spacing: 3px;
+  font-weight: bold;
 }
-
-.clear-notifications:active {
-    background-color: #e0a800;
-    color: #000;
+.bg-gold {
+  border: none;
+  height: 2px;
+  background-color: #0056b3;
 }
-
-/* Notification Icon */
-#notificationIcon .fa-bell {
-    font-size: 24px;
-    color: #ffd700;  /* Gold icon */
-    transition: transform 0.3s ease, color 0.3s ease;
-}
-
-#notificationIcon .fa-bell:hover {
-    transform: scale(1.1);  /* Grow the icon slightly on hover */
-    color: #ffcc00;  /* Change to a slightly brighter gold */
-}
-
-/* Badge for unread notifications */
-#notificationIcon .badge {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    background-color: red;
-    color: white;
-    font-size: 12px;
-    padding: 5px 8px;
-    border-radius: 50%;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-}
-
-/* Spinner Animation for Loading */
-@keyframes slideIn {
-    from {
-        transform: translateX(100%);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
-
-/* Adjustments for small screens */
-@media (max-width: 768px) {
-    .modal-dialog {
-        max-width: 90%;
-    }
-
-    .modal-body ul li {
-        font-size: 1rem;  /* Smaller font size for mobile */
-    }
-}
-
-.list-group-item {
-    position: relative;
-    display: block;
-    padding: .75rem 1.25rem;
-    background-color: #000;
-    border: 1px solid rgba(0,0,0,.125);
-    border-bottom-width: 1px;
-    border-bottom-style: solid;
-    border-bottom-color: rgba(0, 0, 0, 0.125);
+.border-gold {
+  border: 2px solid #0056b3;
 }
 .alert {
-        z-index: 1050; /* Ensure it stays above other elements */
-        animation: slide-in 0.5s ease-out;
-    }
+  z-index: 1050;
+  animation: slide-in 0.5s ease-out;
+}
+@keyframes slide-in {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
 
-    @keyframes slide-in {
-        from {
-            transform: translateY(100%);
-            opacity: 0;
-        }
-        to {
-            transform: translateY(0);
-            opacity: 1;
-        }
-    }
-  .modal-content {
-    background-color: #000; /* Black background */
-    color: gold; /* Gold text */
-    border: 2px solid gold; /* Gold border */
-    border-radius: 10px;
-    box-shadow: 0 10px 30px rgba(255, 215, 0, 0.5); /* Glow effect */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  .modal-content:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 40px rgba(255, 215, 0, 0.8);
-  }
-
-  .card-custom {
-    background-color: black; /* Black card background */
-    color: gold; /* Gold text */
-    border: 1px solid gold; /* Gold border */
-    box-shadow: 0 5px 20px rgba(255, 215, 0, 0.3); /* Subtle shadow */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  .card-custom:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(255, 215, 0, 0.5);
-  }
-
-  .password-mask {
-    letter-spacing: 3px;
-    font-weight: bold;
-  }
-
-  .bg-gold {
-    border: none;
-    height: 2px;
-    background-color: gold;
-  }
-
-  .border-gold {
-    border: 2px solid gold;
-  }
   </style>
 </head>
 
@@ -721,17 +361,13 @@
         <div class="container-fluid p-2">
           <nav class="navbar navbar-expand-lg navbar-light navbar-custom">
             <img src="{% static 'finowayslogo.png' %}" width="80" height="80" alt="Logo">
-            <div class="center-text">FinoFxAlgo</div>
+            <div class="center-text">Investezzy</div>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
               <ul class="navbar-nav ml-auto">
-<li class="nav-item">
-  <a class="nav-link" href="#" id="mt5AccountIcon" data-toggle="modal" data-target="#mt5AccountModal">
-    <i class="fa-solid fa-chart-pie"></i> MT5 Account
-  </a>
-</li>
+
                 <li class="nav-item">
                   <a class="nav-link pay-now-btn" href="#" data-toggle="modal" data-target="#payModal">Pay Now</a>
                 </li>
@@ -806,49 +442,7 @@
     </a>
 
   </div>
-<div class="modal fade" id="mt5AccountModal" tabindex="-1" role="dialog" aria-labelledby="mt5AccountModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content bg-dark text-gold border-gold">
-      <div class="modal-header">
-        <h5 class="modal-title" id="mt5AccountModalLabel">
-          <i class="fa-solid fa-chart-pie"></i> MT5 Account Details
-        </h5>
-        <button type="button" class="close text-gold" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="card card-custom mb-3">
-          <div class="card-body text-center">
-            <h5><i class="fa-solid fa-user-circle"></i> Account Information</h5>
-            <hr class="bg-gold">
-            <p><strong>Account Number:</strong> <span id="mt5AccountNumber">N/A</span></p>
-            <p><strong>Server:</strong> <span id="mt5Server">N/A</span></p>
-            <p>
-              <strong>Password:</strong>
-              <span id="mt5Password" class="password-mask">******</span>
-              <button id="togglePassword" class="btn btn-sm btn-warning ml-2">Show</button>
-            </p>
-          </div>
-        </div>
-        <div class="card card-custom">
-          <div class="card-body">
-            <h5><i class="fa-solid fa-wallet"></i> Financial Details</h5>
-            <hr class="bg-gold">
-            <p><strong>Balance:</strong> <span id="mt5Balance">N/A</span></p>
-            <p><strong>Equity:</strong> <span id="mt5Equity">N/A</span></p>
-            <p><strong>Margin:</strong> <span id="mt5Margin">N/A</span></p>
-            <p><strong>Free Margin:</strong> <span id="mt5FreeMargin">N/A</span></p>
-            <p><strong>Margin Level:</strong> <span id="mt5MarginLevel">N/A</span></p>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
+
 
 
   <div class="modal fade" id="profileModal" tabindex="-1" role="dialog" aria-labelledby="profileModalLabel"
@@ -1152,56 +746,7 @@ document.getElementById('notificationIcon').addEventListener('click', function (
 
 
   </script>
-<script>
-  document.getElementById('mt5AccountIcon').addEventListener('click', function () {
-    // Fetch MT5 account details
-    fetch("{% url 'fetch_client_mt5' %}")
-      .then(response => response.json())
-      .then(data => {
-        if (data.error) {
-          alert(data.error);
-        } else {
-          // Update modal with fetched data
-          document.getElementById('mt5AccountNumber').textContent = data.account_number;
-          document.getElementById('mt5Server').textContent = data.server;
-          document.getElementById('mt5Password').textContent = '******'; // Masked initially
-          document.getElementById('mt5Balance').textContent = `${data.balance} USD`;
-          document.getElementById('mt5Equity').textContent = `${data.equity} USD`;
-          document.getElementById('mt5Margin').textContent = `${data.margin} USD`;
-          document.getElementById('mt5FreeMargin').textContent = `${data.margin_free} USD`;
-          document.getElementById('mt5MarginLevel').textContent = `${data.margin_level}%`;
-        }
-      })
-      .catch(error => {
-        console.error('Error fetching MT5 account details:', error);
-        alert('Failed to fetch MT5 account details.');
-      });
-  });
 
-  // Toggle password visibility
-  document.getElementById('togglePassword').addEventListener('click', function () {
-    const passwordField = document.getElementById('mt5Password');
-    const toggleButton = this;
-    if (passwordField.textContent === '******') {
-      // Show password
-      fetch("{% url 'fetch_client_mt5' %}") // Securely fetch the password
-        .then(response => response.json())
-        .then(data => {
-          if (!data.error) {
-            passwordField.textContent = data.password;
-            toggleButton.textContent = 'Hide';
-          }
-        })
-        .catch(error => {
-          console.error('Error fetching password:', error);
-        });
-    } else {
-      // Hide password
-      passwordField.textContent = '******';
-      toggleButton.textContent = 'Show';
-    }
-  });
-</script>
 
 </body>
 
