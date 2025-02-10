@@ -399,4 +399,4 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
 
 
-OPENAI_API_KEY = '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'
+OPENAI_API_KEY = ''
